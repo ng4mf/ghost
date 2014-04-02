@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ghost Hunter</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="new_game">New Game</string>
+    <string name="continue_game">Continue Game</string>
+    <string name="high_scores">High Scores</string>
+
+</resources>
