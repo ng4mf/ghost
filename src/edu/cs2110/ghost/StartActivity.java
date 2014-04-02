@@ -10,6 +10,11 @@ public class StartActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
+		this.setContentView(R.layout.fragment_menu);
+		FragmentManager fm = getFragmentManager();
+		fm.beginTransaction().attach(new MenuFragment()).commit();
 	}
 	
 	@Override
@@ -24,6 +29,7 @@ public class StartActivity extends Activity {
 	
 	@Override
 	public void onResume() {
+		super.onResume();
 		this.setContentView(R.layout.fragment_menu);
 		FragmentManager fm = getFragmentManager();
 		fm.beginTransaction().attach(new MenuFragment()).commit();
