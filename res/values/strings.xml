@@ -6,5 +6,12 @@
     <string name="new_game">New Game</string>
     <string name="continue_game">Continue Game</string>
     <string name="high_scores">High Scores</string>
+    <string name="okay">OK</string>
+    <string name="neeraj">Neeraj Gandhi</string>
+    <string name="jeremy">Jeremy Park</string>
+    <string name="morgan">Morgan Locks</string>
+    <string name="benjamin">Benjamin Stokes</string>
+    <string name="cs">University of Virginia CS2110 Spring 2014</string>
+    <string name="success_toast">Success!</string>
 
 </resources>

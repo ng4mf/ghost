@@ -1,14 +1,17 @@
 package edu.cs2110.ghost;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 
 public class MenuFragment extends Fragment {
 	private Button mapButton;
@@ -22,16 +25,20 @@ public class MenuFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.app_name);
+		Log.d(TAG, "Made Menu");
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_menu, parent, false);
+		
 		newGameButton = (Button)v.findViewById(R.id.start_new_game);
 		newGameButton.setText("New Game");
+		Log.d(TAG, "Position before OnClickListener");
 		newGameButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "New Game Button Registered");
 	            Intent i = new Intent(getActivity(), GameActivity.class);
 	            startActivity(i);
 			}
@@ -61,6 +68,10 @@ public class MenuFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 	            //Open fragment to show high scores
+				DialogFragment hs = new HighScoreFragment();
+				FragmentManager fm = getActivity().getFragmentManager();
+				hs.show(fm, "High Scores");
+				
 			}
 		});
 		return v;
