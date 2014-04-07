@@ -10,5 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@android:style/Theme.Dialog" />
-    	
+    
+
+	<!--  
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Activity Loading Correctly, Issue with GMaps" />
+    -->
 </RelativeLayout>

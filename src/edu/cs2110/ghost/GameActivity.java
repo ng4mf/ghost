@@ -12,5 +12,6 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "GameActivity Initiated");
 		setContentView(R.layout.fragment_map);
+		
 	}
 }
