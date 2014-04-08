@@ -1,46 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical"
-  >
-
-    <TextView
-        android:id="@+id/main_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Main Menu" />
-
-  <Button android:id="@+id/start_new_game"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:text="New Game"
-    />
+    android:orientation="vertical" >
+    
 
-  <Button
-      android:id="@+id/continue_paused_game"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="16dp"
-      android:layout_marginRight="16dp"
-      android:text="Continue Previous Game" />
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="156dp"
+        android:layout_height="116dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_ghost_hunter" />
 
-  <Button
-      android:id="@+id/difficulty_adjustor"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="16dp"
-      android:layout_marginRight="16dp"
-      android:text="Change Difficulty" />
+    <Button
+        android:id="@+id/start_new_game"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonshape"
+        android:text="@string/new_game"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp" />
 
-  <Button
-      android:id="@+id/high_scores"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="16dp"
-      android:layout_marginRight="16dp"
-      android:text="High Scores" />
+    <Button
+        android:id="@+id/continue_paused_game"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonshape"
+        android:text="Continue Game"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp" />
+
+    <Button
+        android:id="@+id/difficulty_adjustor"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonshape"
+        android:text="Change Difficulty"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/high_scores"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonshape"
+        android:text="High Scores"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp" />
+
+    <DigitalClock
+        android:id="@+id/digitalClock1"
+        android:layout_width="match_parent"
+        android:layout_height="106dp"
+        android:layout_gravity="center"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="DigitalClock"
+        android:textAllCaps="false" />
 
 </LinearLayout>
