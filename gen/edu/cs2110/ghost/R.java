@@ -218,29 +218,31 @@ containing a value of this type.
         public static final int common_signin_btn_text_normal_light=0x7f020016;
         public static final int common_signin_btn_text_pressed_dark=0x7f020017;
         public static final int common_signin_btn_text_pressed_light=0x7f020018;
-        public static final int ghost_hunter=0x7f020019;
-        public static final int ic_ghost_hunter=0x7f02001a;
-        public static final int ic_launcher=0x7f02001b;
-        public static final int ic_plusone_medium_off_client=0x7f02001c;
-        public static final int ic_plusone_small_off_client=0x7f02001d;
-        public static final int ic_plusone_standard_off_client=0x7f02001e;
-        public static final int ic_plusone_tall_off_client=0x7f02001f;
-        public static final int ic_todo_list_icon=0x7f020020;
+        public static final int explosion=0x7f020019;
+        public static final int ghost_hunter=0x7f02001a;
+        public static final int ic_ghost_hunter=0x7f02001b;
+        public static final int ic_launcher=0x7f02001c;
+        public static final int ic_plusone_medium_off_client=0x7f02001d;
+        public static final int ic_plusone_small_off_client=0x7f02001e;
+        public static final int ic_plusone_standard_off_client=0x7f02001f;
+        public static final int ic_plusone_tall_off_client=0x7f020020;
+        public static final int ic_todo_list_icon=0x7f020021;
     }
     public static final class id {
         public static final int ViewPager=0x7f050005;
-        public static final int continue_paused_game=0x7f05000a;
-        public static final int difficulty_adjustor=0x7f05000b;
-        public static final int digitalClock1=0x7f05000d;
+        public static final int continue_paused_game=0x7f05000b;
+        public static final int difficulty_adjustor=0x7f05000c;
+        public static final int digitalClock1=0x7f05000e;
         public static final int fragmentContainer=0x7f050006;
-        public static final int high_scores=0x7f05000c;
+        public static final int high_scores=0x7f05000d;
         public static final int hybrid=0x7f050004;
-        public static final int imageView1=0x7f050008;
-        public static final int map=0x7f050007;
+        public static final int imageView1=0x7f050009;
+        public static final int map=0x7f050008;
+        public static final int mapContainer=0x7f050007;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int satellite=0x7f050002;
-        public static final int start_new_game=0x7f050009;
+        public static final int start_new_game=0x7f05000a;
         public static final int terrain=0x7f050003;
     }
     public static final class integer {
