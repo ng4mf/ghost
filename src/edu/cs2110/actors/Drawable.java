@@ -1,6 +1,6 @@
-package edu.cs2110.ghost;
+package edu.cs2110.actors;
 
-import edu.cs2110.actors.Images;
+import edu.cs2110.ghost.GhostThread;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;

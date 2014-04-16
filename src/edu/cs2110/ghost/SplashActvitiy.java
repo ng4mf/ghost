@@ -18,8 +18,8 @@ public class SplashActvitiy extends Activity {
 			@Override
 			public void run() {
 				try {
-					sleep(5000);
-					startActivity(new Intent(getApplicationContext(), StartActivity.class)); //Change "MainActivity" to whatever class you want to transition to
+					sleep(500);
+					startActivity(new Intent(getApplicationContext(), PostSplashActivity.class)); //Change "MainActivity" to whatever class you want to transition to
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

@@ -45,7 +45,7 @@ public class MenuFragment extends Fragment {
 		});
 		
 		continuePausedGameButton = (Button)v.findViewById(R.id.continue_paused_game);
-		continuePausedGameButton.setText("Adjust Difficulty");
+		continuePausedGameButton.setText("Continue");
 		continuePausedGameButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -63,7 +63,7 @@ public class MenuFragment extends Fragment {
 		});
 		
 		highScoresButton = (Button)v.findViewById(R.id.high_scores);
-		highScoresButton.setText("Adjust Difficulty");
+		highScoresButton.setText("High Scores");
 		highScoresButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

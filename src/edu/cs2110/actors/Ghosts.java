@@ -17,12 +17,15 @@ public class Ghosts {
 	private int spriteHeight;
 	private int spriteWidth;
 	
+	private int health;
+	
 	public Ghosts() {
 		hitbox = new Rect(0,0,0,0);
 		frameTimer = 0;
 		currentFrame = 0;
 		xCoord = 100;
 		yCoord = 100;
+		health = 10;
 	}
 	
 	public void Initialize(Bitmap bitmap, int height, int width, int fps, int frameCount) {

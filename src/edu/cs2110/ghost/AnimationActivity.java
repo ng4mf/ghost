@@ -1,6 +1,7 @@
 package edu.cs2110.ghost;
 
 
+import edu.cs2110.actors.Drawable;
 import edu.cs2110.actors.Ghosts;
 import android.app.Activity;
 import android.content.Context;

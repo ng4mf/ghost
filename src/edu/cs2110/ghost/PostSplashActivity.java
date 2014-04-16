@@ -5,7 +5,7 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
 
-public class StartActivity extends Activity {
+public class PostSplashActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
