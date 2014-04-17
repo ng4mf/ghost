@@ -9,6 +9,9 @@ import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -75,6 +78,27 @@ public class GameActivity extends Activity {
 		
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.action_bar_actions, menu);
+	    return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected (MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.pause_game:
+				if (thread != null)
+					thread.setRunning(false);
+				return true;
+			case R.id.play_game:
+				if (thread != null)
+					thread.setRunning(true);
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
 	
 	private boolean setUpMapIfNeeded() {
 		//mMapFragment = MapFragment.newInstance();
@@ -117,7 +141,7 @@ public class GameActivity extends Activity {
 		//generateGhost();
 	}
 	
-	private void generateGhost() {
+	/*private void generateGhost() {
 		Log.d(TAG, "Setting Store Up");
 		mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(38.036550, -78.507310))
@@ -130,7 +154,7 @@ public class GameActivity extends Activity {
 				return false;
 			}
 		});
-	}
+	}*/
 	
 	private void updateScreen(ArrayList<Ghosts> g) {
 		Log.d(TAG, "Updating");
@@ -187,6 +211,7 @@ public class GameActivity extends Activity {
 		private ArrayList<Ghosts> ghosts;
 		private boolean run = false;
 		private long timer;
+		private boolean cancel = false;
 		
 		private GhostThread(SurfaceHolder surfaceHolder, Images panel) {
 			this.surfaceHolder = surfaceHolder;
@@ -210,40 +235,44 @@ public class GameActivity extends Activity {
 			Canvas c;
 			timer = System.currentTimeMillis();
 			ghosts.add(new Ghosts(38.036550, -78.507310));
-			while (run) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				for (Ghosts g: ghosts) {
-					double x = g.getXCoord();
-					double y = g.getYCoord();
-					
-					x += 0.0001;
-					y += 0.0001;
-					g.updateCords(x, y);
-				}
-				publishProgress(ghosts);
-				//publishProgress();
-				/*
-				c = null;
-				panel.onUpdate(timer);
-				try {
-					c = surfaceHolder.lockCanvas(null);
-					synchronized (surfaceHolder) {
-						//panel.onDraw(c);
+			while (true) {
+				if (run){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} finally {
-					// do this in a finally so that if an exception is thrown
-					// during the above, we don't leave the Surface in an
-					// inconsistent state
-					if (c != null) {
-						surfaceHolder.unlockCanvasAndPost(c);
+					for (Ghosts g: ghosts) {
+						double x = g.getXCoord();
+						double y = g.getYCoord();
+						
+						x += 0.0001;
+						y += 0.0001;
+						g.updateCords(x, y);
 					}
+					publishProgress(ghosts);
+					//publishProgress();
+					/*
+					c = null;
+					panel.onUpdate(timer);
+					try {
+						c = surfaceHolder.lockCanvas(null);
+						synchronized (surfaceHolder) {
+							//panel.onDraw(c);
+						}
+					} finally {
+						// do this in a finally so that if an exception is thrown
+						// during the above, we don't leave the Surface in an
+						// inconsistent state
+						if (c != null) {
+							surfaceHolder.unlockCanvasAndPost(c);
+						}
+					}
+					*/
+					if (cancel)
+						break;
 				}
-				*/
 			}
 			return null;
 		}

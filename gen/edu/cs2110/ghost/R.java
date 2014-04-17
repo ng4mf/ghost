@@ -223,11 +223,13 @@ containing a value of this type.
         public static final int ghost_sprite=0x7f02001b;
         public static final int ic_ghost_hunter=0x7f02001c;
         public static final int ic_launcher=0x7f02001d;
-        public static final int ic_plusone_medium_off_client=0x7f02001e;
-        public static final int ic_plusone_small_off_client=0x7f02001f;
-        public static final int ic_plusone_standard_off_client=0x7f020020;
-        public static final int ic_plusone_tall_off_client=0x7f020021;
-        public static final int ic_todo_list_icon=0x7f020022;
+        public static final int ic_pause=0x7f02001e;
+        public static final int ic_play=0x7f02001f;
+        public static final int ic_plusone_medium_off_client=0x7f020020;
+        public static final int ic_plusone_small_off_client=0x7f020021;
+        public static final int ic_plusone_standard_off_client=0x7f020022;
+        public static final int ic_plusone_tall_off_client=0x7f020023;
+        public static final int ic_todo_list_icon=0x7f020024;
     }
     public static final class id {
         public static final int ViewPager=0x7f050005;
@@ -242,6 +244,8 @@ containing a value of this type.
         public static final int mapContainer=0x7f050007;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
+        public static final int pause_game=0x7f05000f;
+        public static final int play_game=0x7f050010;
         public static final int satellite=0x7f050002;
         public static final int start_new_game=0x7f050009;
         public static final int terrain=0x7f050003;
@@ -255,6 +259,9 @@ containing a value of this type.
         public static final int fragment_map=0x7f030002;
         public static final int fragment_menu=0x7f030003;
         public static final int game_activity_fragment=0x7f030004;
+    }
+    public static final class menu {
+        public static final int action_bar_actions=0x7f0a0000;
     }
     public static final class string {
         public static final int app_name=0x7f06001a;

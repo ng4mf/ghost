@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- Pause Button -->
+    <item 
+        android:id="@+id/pause_game"
+        android:icon="@drawable/ic_pause"
+        android:showAsAction="always"/>
+    <item 
+        android:id="@+id/play_game"
+        android:icon="@drawable/ic_play"
+        android:showAsAction="always"/>
+</menu>
