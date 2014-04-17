@@ -4,11 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Ghosts {
 	
 	private Bitmap animation;
-	private int xCoord;
-	private int yCoord;
+	private double xCoord;
+	private double yCoord;
 	private Rect hitbox;
 	private int fps;
 	private int numFrames;
@@ -16,6 +18,7 @@ public class Ghosts {
 	private long frameTimer;
 	private int spriteHeight;
 	private int spriteWidth;
+	private LatLng cords;
 	
 	private int health;
 	
@@ -27,6 +30,15 @@ public class Ghosts {
 		yCoord = 100;
 		health = 10;
 	}
+	
+	public Ghosts(double x, double y) {
+		health = 10;
+		xCoord = x;
+		yCoord = y;
+		cords = new LatLng(xCoord, yCoord);
+	}
+	
+	
 	
 	public void Initialize(Bitmap bitmap, int height, int width, int fps, int frameCount) {
 		this.animation = bitmap;
@@ -40,11 +52,21 @@ public class Ghosts {
 		this.numFrames = frameCount;
 	}
 	
-	public int getXCoord() {
+	public void updateCords(double x, double y) {
+		xCoord = x;
+		yCoord = y;
+		cords = new LatLng(x,y);
+	}
+	
+	public void setCoordinates(LatLng c) {
+		cords = c;
+	}
+	
+	public double getXCoord() {
 		return xCoord;
 	}
 	
-	public int getYCoord() {
+	public double getYCoord() {
 		return yCoord;
 	}
 	
@@ -70,10 +92,16 @@ public class Ghosts {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "Ghost at " + xCoord + ", " + yCoord;
+	}
+	/*
 	public void draw(Canvas canvas) {
 		Rect dest = new Rect(getXCoord(), getYCoord(), getXCoord() + spriteWidth,
 				getYCoord() + spriteHeight);
 		canvas.drawBitmap(animation, hitbox, dest, null);
 	}
+	*/
 
 }

@@ -1,25 +1,37 @@
 package edu.cs2110.ghost;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Activity;
+import android.graphics.Canvas;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceHolder;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import edu.cs2110.actors.Ghosts;
+import edu.cs2110.actors.Images;
+
 public class GameActivity extends Activity {
 	private static final String TAG = "GameActivity";
-	
-	
 	private GoogleMap mMap;
 	private MapFragment mMapFragment;
 	private GoogleMapOptions options = new GoogleMapOptions();
 	
+	private ArrayList<Ghosts> ghosts = new ArrayList<Ghosts>();
+	private Map<Ghosts, Marker> ghostMap = new HashMap<Ghosts, Marker>();
+	private GhostThread thread;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -27,38 +39,11 @@ public class GameActivity extends Activity {
 		setContentView(R.layout.game_activity_fragment);
 		Log.d(TAG, "Made GameActivity");
 		
-		/*
-        // Check that the activity is using the layout version with
-        // the fragment_container FrameLayout
-        if (findViewById(R.id.gameContainer) != null) {
-        	Log.d(TAG, "container exists");
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-            if (savedInstanceState != null) {
-                return;
-            }
-            
-            Log.d(TAG, "Almost made map");
-            // Create a new Fragment to be placed in the activity layout
-            //GameMapFragment firstFragment = new GameMapFragment();
-            mMapFragment = MapFragment.newInstance();
-            Log.d(TAG, "Made map");
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
-            //firstFragment.setArguments(getIntent().getExtras());
-            
-            // Add the fragment to the 'fragment_container' FrameLayout
-            getFragmentManager().beginTransaction()
-                    .add(R.id.gameContainer, mMapFragment).commit();
-        }
-        */
-        //Log.d(TAG, "view not made");
 		
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.gameContainer) != null) {
-        	Log.d(TAG, "gameFragmentContainer exists");
+        	Log.d(TAG, "gameContainer exists");
             // However, if we're being restored from a previous state,
             // then we don't need to do anything and should return or else
             // we could end up with overlapping fragments.
@@ -91,7 +76,7 @@ public class GameActivity extends Activity {
 	}
 	
 	
-	private void setUpMapIfNeeded() {
+	private boolean setUpMapIfNeeded() {
 		//mMapFragment = MapFragment.newInstance();
 		//FragmentTransaction trans = getFragmentManager().beginTransaction();
 		//trans.add(R.id.mapContainer, mMapFragment).commit();
@@ -108,9 +93,11 @@ public class GameActivity extends Activity {
 	        	Log.d(TAG, "Moving Camera");
 	        	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
 	        	setUpStores();
+	        	return true;
 	        }
 	        
 	    }
+	    return false;
 	}
 	
 	private void setUpStores() {
@@ -127,20 +114,149 @@ public class GameActivity extends Activity {
 				return false;
 			}
 		});
+		//generateGhost();
+	}
+	
+	private void generateGhost() {
+		Log.d(TAG, "Setting Store Up");
+		mMap.addMarker(new MarkerOptions()
+				.position(new LatLng(38.036550, -78.507310))
+				.title("Ghost")
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite)));
+		mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+			@Override
+			public boolean onMarkerClick(Marker arg0) {
+				Log.d("Store Marker", "Registered Marker Click");
+				return false;
+			}
+		});
+	}
+	
+	private void updateScreen(ArrayList<Ghosts> g) {
+		Log.d(TAG, "Updating");
+		Log.d(TAG, g.toString());
+		ghosts = g;
+		for (Ghosts ghost: g)
+			Log.d("updateScreen", ghost.toString());
+		
+		for (Ghosts ghost: ghosts) {
+			Log.d(TAG, "Gets into loop");
+			Log.d(TAG, "" + (ghostMap.keySet().toString()));
+			Log.d(TAG, "" + (ghostMap.keySet().toString()));
+			if (!ghostMap.keySet().contains(ghost)) {
+				//Log.d(TAG, "Can't do if block");
+				MarkerOptions a = new MarkerOptions()
+					.position(new LatLng(ghost.getXCoord(), ghost.getYCoord()))
+					.title("Ghost")
+					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite));
+				Marker m = mMap.addMarker(a);
+				ghostMap.put(ghost, m);
+			}
+			else {				
+				//Log.d(TAG, "Can't do else block");
+				ghostMap.get(ghost).setPosition(new LatLng(ghost.getXCoord(), ghost.getYCoord()));
+			}
+		}
 	}
 	
 	@Override
 	public void onStart() {
 		super.onStart();
-		setUpMapIfNeeded();
-    	//mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
-    	//setUpStores();
+		if (setUpMapIfNeeded() && thread == null) {
+			Log.d(TAG, "onStart");
+			thread = new GhostThread();
+			thread.execute();
+		}
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		setUpMapIfNeeded();
+		if (setUpMapIfNeeded() && thread == null) {
+			thread = new GhostThread();
+			Log.d(TAG, "onResume");
+			//thread.execute();
+		}
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
 	}
+	
+	public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
+
+		private SurfaceHolder surfaceHolder;
+		private Images panel;
+		private ArrayList<Ghosts> ghosts;
+		private boolean run = false;
+		private long timer;
+		
+		private GhostThread(SurfaceHolder surfaceHolder, Images panel) {
+			this.surfaceHolder = surfaceHolder;
+			this.panel = panel;
+			panel.onInitalize();
+		}
+		 
+		private GhostThread() {
+			ghosts = new ArrayList<Ghosts>();
+			setRunning(true);
+			//doInBackground();
+		}
+		
+		public void setRunning(boolean value) {
+			run = value;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected Void doInBackground(Void... params) {
+			Canvas c;
+			timer = System.currentTimeMillis();
+			ghosts.add(new Ghosts(38.036550, -78.507310));
+			while (run) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				for (Ghosts g: ghosts) {
+					double x = g.getXCoord();
+					double y = g.getYCoord();
+					
+					x += 0.0001;
+					y += 0.0001;
+					g.updateCords(x, y);
+				}
+				publishProgress(ghosts);
+				//publishProgress();
+				/*
+				c = null;
+				panel.onUpdate(timer);
+				try {
+					c = surfaceHolder.lockCanvas(null);
+					synchronized (surfaceHolder) {
+						//panel.onDraw(c);
+					}
+				} finally {
+					// do this in a finally so that if an exception is thrown
+					// during the above, we don't leave the Surface in an
+					// inconsistent state
+					if (c != null) {
+						surfaceHolder.unlockCanvasAndPost(c);
+					}
+				}
+				*/
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onProgressUpdate(ArrayList<Ghosts>...g) {
+			Log.d("GhostThread", "onProgressUpdate");
+			for (ArrayList<Ghosts> list: g)
+				for (Ghosts ghost: list)
+					Log.d("GhostThread", ghost.toString());
+			updateScreen(g[0]);
+		}
+	}
 }
+
+
