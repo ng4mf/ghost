@@ -2,7 +2,6 @@ package edu.cs2110.itemsAndAbilities;
 
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
-import edu.cs2110.ghost.*;
 
 /**
  * 
@@ -29,42 +28,37 @@ public class Stealthy implements Item {
 	}
 
 	@Override
-	public boolean useItem(Player p) {
-		boolean retVal = false;
+	public void useItem(Player p) {
 		if (p.isStealthyEffect() == true) {
 			
 		} else {
 			p.setStealthyEffect(true);
-			retVal = true;
+			this.decreaseCount(1);
 		}
-		return retVal;
 	}
 
 	@Override
-	public boolean useItem(Ghosts g) {
-		return false;
-
-	}
-
-	@Override
-	public boolean useItem(Player p, Ghosts g) {
-		return false;
+	public void useItem(Ghosts g) {
 
 	}
 
 	@Override
-	public boolean increaseCount(int count) {
+	public void useItem(Player p, Ghosts g) {
+	
+	}
+
+	@Override
+	public void increaseCount(int count) {
 		this.count = this.count + count;
-		return true;
+
 	}
 
 	@Override
-	public boolean decreaseCount(int count) {
+	public void decreaseCount(int count) {
 		this.count = this.count - count;
 		if (this.count < 0) {
 			this.count = 0;
 		}
-		return true;
 	}
 
 }
