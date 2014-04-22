@@ -156,7 +156,7 @@ public class GameActivity extends Activity {
 		});
 	}*/
 	
-	private void updateScreen(ArrayList<Ghosts> g) {
+	public void updateScreen(ArrayList<Ghosts> g) {
 		Log.d(TAG, "Updating");
 		Log.d(TAG, g.toString());
 		ghosts = g;
@@ -188,7 +188,7 @@ public class GameActivity extends Activity {
 		super.onStart();
 		if (setUpMapIfNeeded() && thread == null) {
 			Log.d(TAG, "onStart");
-			thread = new GhostThread();
+			thread = new GhostThread(this);
 			thread.execute();
 		}
 	}
@@ -197,95 +197,16 @@ public class GameActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		if (setUpMapIfNeeded() && thread == null) {
-			thread = new GhostThread();
+			thread = new GhostThread(this);
 			Log.d(TAG, "onResume");
 			//thread.execute();
 		}
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
 	}
 	
-	public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 
-		private SurfaceHolder surfaceHolder;
-		private Images panel;
-		private ArrayList<Ghosts> ghosts;
-		private boolean run = false;
-		private long timer;
-		private boolean cancel = false;
-		
-		private GhostThread(SurfaceHolder surfaceHolder, Images panel) {
-			this.surfaceHolder = surfaceHolder;
-			this.panel = panel;
-			panel.onInitalize();
-		}
-		 
-		private GhostThread() {
-			ghosts = new ArrayList<Ghosts>();
-			setRunning(true);
-			//doInBackground();
-		}
-		
-		public void setRunning(boolean value) {
-			run = value;
-		}
 
-		@SuppressWarnings("unchecked")
-		@Override
-		protected Void doInBackground(Void... params) {
-			Canvas c;
-			timer = System.currentTimeMillis();
-			ghosts.add(new Ghosts(38.036550, -78.507310));
-			while (true) {
-				if (run){
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					for (Ghosts g: ghosts) {
-						double x = g.getXCoord();
-						double y = g.getYCoord();
-						
-						x += 0.0001;
-						y += 0.0001;
-						g.updateCords(x, y);
-					}
-					publishProgress(ghosts);
-					//publishProgress();
-					/*
-					c = null;
-					panel.onUpdate(timer);
-					try {
-						c = surfaceHolder.lockCanvas(null);
-						synchronized (surfaceHolder) {
-							//panel.onDraw(c);
-						}
-					} finally {
-						// do this in a finally so that if an exception is thrown
-						// during the above, we don't leave the Surface in an
-						// inconsistent state
-						if (c != null) {
-							surfaceHolder.unlockCanvasAndPost(c);
-						}
-					}
-					*/
-					if (cancel)
-						break;
-				}
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onProgressUpdate(ArrayList<Ghosts>...g) {
-			Log.d("GhostThread", "onProgressUpdate");
-			for (ArrayList<Ghosts> list: g)
-				for (Ghosts ghost: list)
-					Log.d("GhostThread", ghost.toString());
-			updateScreen(g[0]);
-		}
-	}
+	
 }
 
 

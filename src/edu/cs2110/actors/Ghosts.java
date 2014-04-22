@@ -18,6 +18,9 @@ public class Ghosts {
 	private long frameTimer;
 	private int spriteHeight;
 	private int spriteWidth;
+	private double speed;
+	private double[] direction;
+	
 	private LatLng cords;
 	
 	private int health;
@@ -26,12 +29,33 @@ public class Ghosts {
 		hitbox = new Rect(0,0,0,0);
 		frameTimer = 0;
 		currentFrame = 0;
-		xCoord = 100;
-		yCoord = 100;
+		
+		//Randomized starting position
+		xCoord = 100 + Math.random()*2 - 1;
+		yCoord = 100 + Math.random()*2 - 1;
+		
 		health = 10;
+		speed = .0001;
+		
+		//Some ghosts will move quickly, others will barely move at all.
+		direction = new double[2]; 
+		direction[0] = Math.random()*2-1;
+		direction[1] = Math.random()*2-1;
 	}
 	
 	public Ghosts(double x, double y) {
+		hitbox = new Rect(0,0,0,0);
+		frameTimer = 0;
+		currentFrame = 0;
+		
+		health = 10;
+		speed = .0001;
+		
+		//Some ghosts will move quickly, others will barely move at all.
+		direction = new double[2]; 
+		direction[0] = Math.random()*2-1;
+		direction[1] = Math.random()*2-1;
+		
 		health = 10;
 		xCoord = x;
 		yCoord = y;
@@ -53,9 +77,17 @@ public class Ghosts {
 	}
 	
 	public void updateCords(double x, double y) {
-		xCoord = x;
-		yCoord = y;
+		setXCoord(x);
+		setYCoord(y);
 		cords = new LatLng(x,y);
+	}
+	
+	public double getSpeed(){
+		return speed;
+	}
+	
+	public double[] getDirection(){
+		return direction;
 	}
 	
 	public void setCoordinates(LatLng c) {
@@ -70,11 +102,11 @@ public class Ghosts {
 		return yCoord;
 	}
 	
-	public void setXCoord(int value) {
+	public void setXCoord(double value) {
 		xCoord = value;
 	}
 	
-	public void setYCoord(int value) {
+	public void setYCoord(double value) {
 		yCoord = value;
 	}
 	

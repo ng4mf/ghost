@@ -45,7 +45,7 @@ public class MenuFragment extends Fragment {
 		});
 		
 		continuePausedGameButton = (Button)v.findViewById(R.id.continue_paused_game);
-		continuePausedGameButton.setText("Continue");
+		continuePausedGameButton.setText("Continue*");
 		continuePausedGameButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
