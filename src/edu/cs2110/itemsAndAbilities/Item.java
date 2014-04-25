@@ -9,14 +9,14 @@ public interface Item {
 	
 	public int getCount();
 
-	public boolean useItem(Player p);
+	public void useItem(Player p);
 
-	public boolean useItem(Ghosts g);
+	public void useItem(Ghosts g);
 
-	public boolean useItem(Player p, Ghosts g);
+	public void useItem(Player p, Ghosts g);
 	
-	public boolean increaseCount(int count);
+	public void increaseCount(int count);
 	
-	public boolean decreaseCount(int count);
+	public void decreaseCount(int count);
 
 }

@@ -6,7 +6,7 @@ import edu.cs2110.actors.Player;
 public class Bomb implements Item {
 	private String name;
 	private int count;
-	
+
 	@Override
 	public String getName() {
 		return name;
@@ -17,45 +17,42 @@ public class Bomb implements Item {
 		return count;
 	}
 
-	public Bomb(){
+	public Bomb() {
 		this.name = "Bomb";
 		this.count = 0;
 	}
 
 	@Override
-	public boolean useItem(Ghosts g) {
-		boolean retVal = false;
-		// damage to ghost
-		// need info about ghealth of ghost
-		// will be a multiplication of base power
-		return retVal;
+	public void useItem(Ghosts g) {
+
 	}
 
 	@Override
-	public boolean useItem(Player p) {
-		return false;
-		
+	public void useItem(Player p) {
+
 	}
 
 	@Override
-	public boolean useItem(Player p, Ghosts g) {
-		return false;
-		
+	public void useItem(Player p, Ghosts g) {
+		g.damaged(p, 3);
+		this.decreaseCount(1);
+		if (g.getHealth() == 0) {
+			p.lootChance();
+		}
+
 	}
 
 	@Override
-	public boolean increaseCount(int count) {
+	public void increaseCount(int count) {
 		this.count = this.count + count;
-		return true;
 	}
 
 	@Override
-	public boolean decreaseCount(int count) {
+	public void decreaseCount(int count) {
 		this.count = this.count - count;
 		if (this.count < 0) {
 			this.count = 0;
 		}
-		return true;
 	}
 
 }

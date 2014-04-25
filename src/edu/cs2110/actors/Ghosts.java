@@ -24,6 +24,8 @@ public class Ghosts {
 	private LatLng cords;
 	
 	private int health;
+	private int power;
+	private double attackDistance;
 	
 	public Ghosts() {
 		hitbox = new Rect(0,0,0,0);
@@ -35,6 +37,8 @@ public class Ghosts {
 		yCoord = 100 + Math.random()*2 - 1;
 		
 		health = 10;
+		power = 3;
+		attackDistance = 0.000074917; //calculated from using google coordinate system. 1/4 the width of olson hall.
 		speed = .0001;
 		
 		//Some ghosts will move quickly, others will barely move at all.
@@ -49,6 +53,8 @@ public class Ghosts {
 		currentFrame = 0;
 		
 		health = 10;
+		power = 3;
+		attackDistance = 0.000074917;
 		speed = .0001;
 		
 		//Some ghosts will move quickly, others will barely move at all.
@@ -90,6 +96,25 @@ public class Ghosts {
 		return direction;
 	}
 	
+	public int getHealth() {
+		return health;
+	}
+	
+	public void setHealth(int health) {
+		if (health < 0) {
+			health = 0;
+		}
+		this.health = health;
+	}
+	
+	public int getPower() {
+		return power;
+	}
+
+	public void setPower(int power) {
+		this.power = power;
+	}
+	
 	public void setCoordinates(LatLng c) {
 		cords = c;
 	}
@@ -122,6 +147,53 @@ public class Ghosts {
 			hitbox.left = currentFrame * spriteWidth;
 			hitbox.right = hitbox.left + spriteWidth;
 		}
+	}
+	
+	/**
+	 * Returns true if the ghost will see the player
+	 */
+	public boolean seePlayer(Player p) {
+		boolean retVal = false;
+		if (p.isStealthyEffect() == false) {
+			retVal = true;
+		}
+		return retVal;
+	}
+	
+	/**
+	 * used to check if ghost can attack player
+	 */
+	public boolean inRange(Player p) {
+		boolean retVal = false;
+		double playerPosX = p.getXCoord();
+		double playerPosY = p.getYCoord();
+		if (Math.pow((this.xCoord - playerPosX), 2)
+				+ Math.pow((this.yCoord - playerPosY), 2) <= Math.pow(
+				this.attackDistance, 2)) {
+			retVal = true;
+		}
+		return retVal;
+	}
+	
+	/**
+	 * Returns true if the ghost attacks the player successfully
+	 */
+	public boolean attackPlayer(Player p) {
+		boolean retVal = false;
+		boolean reach = this.inRange(p);
+		if (p.isInvincibilityEffect() == false && reach == true) {
+			p.damaged(this, 1);
+			retVal = true;
+		}
+		return retVal;
+	}
+	
+	/**
+	 * Method accounting for when player damages a ghost
+	 */
+	public void damaged(Player p, int powerModifier) {
+		int gHealth = this.getHealth() - (p.getPower() * powerModifier);
+		this.setHealth(gHealth);
 	}
 	
 	@Override

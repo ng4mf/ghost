@@ -38,22 +38,17 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	protected Void doInBackground(Void... params) {
 		//
 		ghosts.add(new Ghosts(38.036550, -78.507310));
-		while (true) {
-			if (run) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				time+=1;
-				addGhost();
-				for (Ghosts g: ghosts) {
-					determineMovement(g);
-				}
-				
-				Log.d(TAG + "bg", "" + ghosts.size());
-				publishProgress(ghosts);
+		while (run) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			for (Ghosts g: ghosts) {
+				determineMovement(g);
+			}
+			publishProgress(ghosts);
 			if (cancel){
 				break;
 			}
@@ -107,13 +102,11 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	
 	@Override
 	protected void onProgressUpdate(ArrayList<Ghosts>...g) {
-		//Log.d("GhostThread", "onProgressUpdate");
 		for (ArrayList<Ghosts> list: g){
 			for (Ghosts ghost: list){
 				Log.d("GhostThread", ghost.toString());
 			}
 		}
-		Log.d(TAG, "" + g[0].size());
 		master.updateScreen(g[0]);
 	}
 

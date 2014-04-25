@@ -23,42 +23,36 @@ public class Invincibility implements Item{
 	}
 
 	@Override
-	public boolean useItem(Player p) {
-		boolean retVal = false;
+	public void useItem(Player p) {
 		if (p.isInvincibilityEffect() == true) {
 			
 		} else {
 		p.setInvincibilityEffect(true);
-		retVal = true;
+		this.decreaseCount(1);
 		}
-		return retVal;
 	}
 
 	@Override
-	public boolean useItem(Ghosts g) {
-		return false;
+	public void useItem(Ghosts g) {
 		
 	}
 
 	@Override
-	public boolean useItem(Player p, Ghosts g) {
-		return false;
+	public void useItem(Player p, Ghosts g) {
 		
 	}
 
 	@Override
-	public boolean increaseCount(int count) {
+	public void increaseCount(int count) {
 		this.count = this.count + count;
-		return true;
 	}
 
 	@Override
-	public boolean decreaseCount(int count) {
+	public void decreaseCount(int count) {
 		this.count = this.count - count;
 		if (this.count < 0) {
 			this.count = 0;
 		}
-		return true;
 	}
 
 }

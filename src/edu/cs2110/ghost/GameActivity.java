@@ -203,8 +203,10 @@ public class GameActivity extends Activity {
 		setUpUserLocation();
 		//generateGhost();
 	}
-		
+	
 	public void updateScreen(ArrayList<Ghosts> g) {
+		Log.d(TAG, "Updating");
+		Log.d(TAG, g.toString());
 		ghosts = g;
 
 		//Log.d("GameActivity", "User Location about to be updated");

@@ -39,13 +39,14 @@ public class MenuFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "New Game Button Registered");
-	            Intent i = new Intent(getActivity(), GameActivity.class);
-	            startActivity(i);
+				Fragment cp = new ChoosePlayerFragment();
+	            getFragmentManager().beginTransaction()
+	                    .add(R.id.fragmentContainer, cp).commit();
 			}
 		});
 		
 		continuePausedGameButton = (Button)v.findViewById(R.id.continue_paused_game);
-		continuePausedGameButton.setText("Continue");
+		continuePausedGameButton.setText("Continue*");
 		continuePausedGameButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -1,5 +1,6 @@
 package edu.cs2110.actors;
 
+import java.util.Random;
 import edu.cs2110.itemsAndAbilities.*;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,7 +12,7 @@ public class Player {
 	private int health;
 	private int maxHealth;
 	private double currency;
-	private double power;
+	private int power;
 	private double attackDistance;
 	private double xCoord;
 	private double yCoord;
@@ -23,7 +24,7 @@ public class Player {
 	private Item plusHealth;
 	private Item invincibility;
 	private Item stealthy;
-	
+
 	private Bitmap animation;
 	private int currentFrame;
 	private long frameTimer;
@@ -36,15 +37,15 @@ public class Player {
 	/**
 	 * Getters and Setters
 	 */
-	
+
 	public String getUserName() {
 		return userName;
 	}
-	
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
+
 	public int getHealth() {
 		return health;
 	}
@@ -78,14 +79,18 @@ public class Player {
 	}
 
 	public void setCurrency(double currency) {
+		if (currency < 0) {
+			currency = 0;
+		}
 		this.currency = currency;
+
 	}
 
-	public double getPower() {
+	public int getPower() {
 		return power;
 	}
 
-	public void setPower(double power) {
+	public void setPower(int power) {
 		this.power = power;
 	}
 
@@ -132,7 +137,7 @@ public class Player {
 	/**
 	 * Constructors for Player
 	 */
-	public Player(String name, int maxHealth, double power, double currency,
+	public Player(String name, int maxHealth, int power, double currency,
 			double attackDistance) {
 		this.userName = name;
 		this.health = maxHealth;
@@ -153,8 +158,8 @@ public class Player {
 	}
 
 	/**
-	 * 4 methods Taken from ghost class, not sure if it will be utilized correctly here.
-	 * May need to be edited or removed altogether
+	 * 4 methods Taken from ghost class, not sure if it will be utilized
+	 * correctly here. May need to be edited or removed altogether
 	 */
 	public void Initialize(Bitmap bitmap, int height, int width, int fps,
 			int frameCount) {
@@ -168,16 +173,16 @@ public class Player {
 		this.fps = 1000 / fps;
 		this.numFrames = frameCount;
 	}
-	
+
 	public void Update(long gameTime) {
-		if(gameTime > frameTimer + fps) {
+		if (gameTime > frameTimer + fps) {
 			frameTimer = gameTime;
 			currentFrame += 1;
-			
-			if(currentFrame >= numFrames) {
+
+			if (currentFrame >= numFrames) {
 				currentFrame = 0;
 			}
-			
+
 			hitbox.left = currentFrame * spriteWidth;
 			hitbox.right = hitbox.left + spriteWidth;
 		}
@@ -227,11 +232,7 @@ public class Player {
 	}
 
 	/**
-	 * Valid Item Names.
-	 * "Bomb"
-	 * "Power Bomb"
-	 * "+Health"
-	 * "Invincibility"
+	 * Valid Item Names. "Bomb" "Power Bomb" "+Health" "Invincibility"
 	 * "Stealthy"
 	 * 
 	 * used to add a quantity to an item
@@ -268,11 +269,8 @@ public class Player {
 		boolean retVal = false;
 		boolean reach = this.inRange(g);
 		if (this.bomb.getCount() >= 1 && reach == true) {
-			boolean itemCheck = this.bomb.useItem(g);
-			if (itemCheck == true) {
-				this.bomb.decreaseCount(1);
-				retVal = true;
-			}
+			this.bomb.useItem(this, g);
+			retVal = true;
 		}
 		return retVal;
 	}
@@ -283,13 +281,9 @@ public class Player {
 	public boolean usePowerBomb(Ghosts g) {
 		boolean retVal = false;
 		boolean reach = this.inRange(g);
-		if (this.powerBomb.getCount() >= 1
-				&& reach == true) {
-			boolean itemCheck = this.powerBomb.useItem(this, g);
-			if (itemCheck == true) {
-				this.powerBomb.decreaseCount(1);
-				retVal = true;
-			}
+		if (this.powerBomb.getCount() >= 1 && reach == true) {
+			this.powerBomb.useItem(this, g);
+			retVal = true;
 		}
 		return retVal;
 	}
@@ -299,13 +293,10 @@ public class Player {
 	 */
 	public boolean usePlusHealth() {
 		boolean retVal = false;
-			if (this.plusHealth.getCount() >= 1) {
-				boolean itemCheck = this.plusHealth.useItem(this);
-				if (itemCheck == true) {
-					this.plusHealth.decreaseCount(1);
-					retVal = true;
-				}
-			}
+		if (this.plusHealth.getCount() >= 1) {
+			this.plusHealth.useItem(this);
+			retVal = true;
+		}
 		return retVal;
 	}
 
@@ -314,13 +305,10 @@ public class Player {
 	 */
 	public boolean useStealthy() {
 		boolean retVal = false;
-			if (this.stealthy.getCount() >= 1) {
-				boolean itemCheck = this.stealthy.useItem(this);
-				if (itemCheck == true) {
-					this.stealthy.decreaseCount(1);
-					retVal = true;
-				}
-			}
+		if (this.stealthy.getCount() >= 1) {
+			this.stealthy.useItem(this);
+			retVal = true;
+		}
 		return retVal;
 	}
 
@@ -341,13 +329,10 @@ public class Player {
 	 */
 	public boolean useInvincibility() {
 		boolean retVal = false;
-			if (this.invincibility.getCount() >= 1) {
-				boolean itemCheck = this.invincibility.useItem(this);
-				if (itemCheck == true) {
-					this.invincibility.decreaseCount(1);
-					retVal = true;
-				}
-			}
+		if (this.invincibility.getCount() >= 1) {
+			this.invincibility.useItem(this);
+			retVal = true;
+		}
 		return retVal;
 	}
 
@@ -364,11 +349,7 @@ public class Player {
 	}
 
 	/**
-	 * Valid Item Names.
-	 * "Bomb"
-	 * "Power Bomb"
-	 * "+Health"
-	 * "Invincibility"
+	 * Valid Item Names. "Bomb" "Power Bomb" "+Health" "Invincibility"
 	 * "Stealthy"
 	 * 
 	 * used to remove a quantity from an item
@@ -398,39 +379,74 @@ public class Player {
 	 * used to attack ghost without an item
 	 */
 	public boolean attackGhost(Ghosts g) {
-		// need info about ghost class health
-		// will damage ghost based on power
 		boolean retVal = false;
 		boolean reach = this.inRange(g);
 		if (reach == true) {
-
+			g.damaged(this, 1);
+			if (g.getHealth() == 0) {
+				this.lootChance();
+			}
 		}
 		return retVal;
 	}
 
-	/** 
-	 * used to account for damage by ghost
+	/**
+	 * Method accounting for when ghost damages a player
 	 */
-	public boolean hurtByGhost(Ghosts g) {
-		boolean retVal = true;
-		if (this.invincibilityEffect == false) {
-			// need info about ghost damage to player
-			// or a method for ghost attacking player needs to be in ghost class while getting rid of this one
+	public void damaged(Ghosts g, int powerModifier) {
+		int pHealth = this.health - (g.getPower() * powerModifier);
+		this.setHealth(pHealth);
+	}
 
+	/**
+	 * Method accounting for when player damages itself
+	 */
+	public void damaged(Player p, int powerModifier) {
+		int pHealth = this.health - (p.getPower() * powerModifier);
+		this.setHealth(pHealth);
+	}
+
+	public void gainCurrency(double amount) {
+		double current = this.getCurrency();
+		current = current + amount;
+		this.setCurrency(current);
+
+	}
+
+	public void spendCurrency(double amount) {
+		double current = this.getCurrency();
+		current = current - amount;
+		this.setCurrency(current);
+	}
+
+	public void lootChance() {
+		Random generator = new Random();
+		int g = generator.nextInt(5);
+		if (g == 5) {
+			this.gainCurrency(600);
+			this.addItem("Power Bomb", 1);
 		}
-		return retVal;
+		if (g >= 4) {
+			this.gainCurrency(100);
+			this.addItem("Bomb", 2);
+		}
+		if (g >= 3) {
+			this.gainCurrency(100);
+			this.addItem("Bomb", 1);
+		}
+		if (g >= 2) {
+			this.gainCurrency(100);
+		}
+		if (g >= 1) {
+			this.gainCurrency(100);
+		}
+
 	}
 	/*
-	public static void main(String[] args) {
-		Player one = new Player("Player A", 10, 1, 100, 10);
-		Ghosts g = new Ghosts();
-		one.addItem("Power Bomb", 10);
-		System.out.println(one.getHealth());
-		one.usePowerBomb(g);
-		System.out.println(one.getHealth());
-	}
-	*/
-	
+	 * public static void main(String[] args) { Player one = new
+	 * Player("Player A", 10, 1, 100, 10); Ghosts g = new Ghosts();
+	 * one.addItem("Power Bomb", 10); System.out.println(one.getHealth());
+	 * one.usePowerBomb(g); System.out.println(one.getHealth()); }
+	 */
+
 }
-
-

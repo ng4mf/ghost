@@ -2,7 +2,6 @@ package edu.cs2110.itemsAndAbilities;
 
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
-import edu.cs2110.ghost.*;
 
 public class PlusHealth implements Item {
 	private String name;
@@ -24,45 +23,38 @@ public class PlusHealth implements Item {
 	}
 
 	@Override
-	public boolean useItem(Player p) {
-		boolean retVal = false;
-		int currentHealth = p.getHealth();
+	public void useItem(Player p) {
+		int increaseHealth = p.getHealth() + 5;
 		if (p.getHealth() >= p.getMaxHealth()){
 			
 		} else {
-			currentHealth ++;
-			p.setHealth(currentHealth);
-			retVal = true;
+			p.setHealth(increaseHealth);
+			this.decreaseCount(1);
 		}
-		return retVal;
 	}
 
 	@Override
-	public boolean useItem(Ghosts g) {
-		return false;
+	public void useItem(Ghosts g) {
 		
 	}
 
 	@Override
-	public boolean useItem(Player p, Ghosts g) {
-		return false;
+	public void useItem(Player p, Ghosts g) {
 		
 	}
 
 	@Override
-	public boolean increaseCount(int count) {
+	public void increaseCount(int count) {
 		this.count = this.count + count;
-		return true;
 		
 	}
 
 	@Override
-	public boolean decreaseCount(int count) {
+	public void decreaseCount(int count) {
 		this.count = this.count - count;
 		if (this.count < 0) {
 			this.count = 0;
 		}
-		return true;
 	}
 
 }
