@@ -230,6 +230,7 @@ containing a value of this type.
         public static final int ic_plusone_standard_off_client=0x7f020022;
         public static final int ic_plusone_tall_off_client=0x7f020023;
         public static final int ic_todo_list_icon=0x7f020024;
+        public static final int user=0x7f020025;
     }
     public static final class id {
         public static final int ViewPager=0x7f050005;
@@ -369,6 +370,7 @@ containing a value of this type.
         public static final int neeraj=0x7f060020;
         public static final int new_game=0x7f06001c;
         public static final int okay=0x7f06001f;
+        public static final int store=0x7f060026;
         public static final int success_toast=0x7f060025;
     }
     public static final class style {

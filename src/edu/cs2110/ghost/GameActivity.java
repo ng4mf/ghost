@@ -5,15 +5,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
-import android.graphics.Canvas;
-import android.os.AsyncTask;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SurfaceHolder;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -24,7 +30,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.cs2110.actors.Ghosts;
-import edu.cs2110.actors.Images;
 
 public class GameActivity extends Activity {
 	private static final String TAG = "GameActivity";
@@ -34,7 +39,15 @@ public class GameActivity extends Activity {
 	
 	private ArrayList<Ghosts> ghosts = new ArrayList<Ghosts>();
 	private Map<Ghosts, Marker> ghostMap = new HashMap<Ghosts, Marker>();
+	private Map<Ghosts, Location> ghostLocationMap = new HashMap<Ghosts, Location>();
 	private GhostThread thread;
+	
+	private Marker userMarker;
+	private MarkerOptions userMarkerOptions;
+	private Location userLocation;
+	
+	private LocationManager manager;
+	private LocationListener listen;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,11 +55,16 @@ public class GameActivity extends Activity {
 		setContentView(R.layout.game_activity_fragment);
 		Log.d(TAG, "Made GameActivity");
 		
+		int x = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+		if (x != ConnectionResult.SUCCESS) {
+			GooglePlayServicesUtil.getErrorDialog(x, this, 0);
+			Log.d(TAG, "maps not installed?");
+		}
 		
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.gameContainer) != null) {
-        	Log.d(TAG, "gameContainer exists");
+        	//Log.d(TAG, "gameContainer exists");
             // However, if we're being restored from a previous state,
             // then we don't need to do anything and should return or else
             // we could end up with overlapping fragments.
@@ -63,21 +81,63 @@ public class GameActivity extends Activity {
         		.zoomControlsEnabled(true);
         	
             // Create a new Fragment to be placed in the activity layout
-            mMapFragment = MapFragment.newInstance(options);
-            //mMapFragment = MapFragment.newInstance();
-            Log.d(TAG, "Successfully made GameMapFragment");
+           // Log.d(TAG, "MapFragment exists: " + !(mMapFragment == null));
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
-            //mMapFragment.setArguments(getIntent().getExtras());
             setUpMapIfNeeded();
-            Log.d(TAG, "Set up Map");
             // Add the fragment to the 'fragment_container' FrameLayout
+
+    		
             getFragmentManager().beginTransaction()
-                    .add(R.id.gameContainer, mMapFragment).commit();
+                    .replace(R.id.gameContainer, mMapFragment).commit();
         }
 		
 	}
 	
+	private void setUpUserLocation() {
+
+		//Log.d("UserLoc Setup", "Starting method");
+		// Acquire a reference to the system Location Manager
+		manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+		// Define a listener that responds to location updates
+		listen = new LocationListener() {
+		    public void onLocationChanged(Location location) {
+			      // Called when a new location is found by the location provider.
+		    }
+
+		    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+		    public void onProviderEnabled(String provider) {}
+
+		    public void onProviderDisabled(String provider) {}
+		  };
+
+		// Register the listener with the Location Manager to receive location updates
+		manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listen);
+		manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listen);
+		
+		
+		Log.d("UserLoc Setup", "Calling last location");
+		Criteria c = new Criteria();
+		c.setHorizontalAccuracy(3);
+		String bestProvider = manager.getBestProvider(c, true);
+		userLocation = manager.getLastKnownLocation(bestProvider);
+		if (userLocation == null) {
+			bestProvider = "network";
+			userLocation = manager.getLastKnownLocation(bestProvider);
+		}
+		Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
+		if (userMarker == null) {
+			userMarkerOptions = new MarkerOptions()
+				.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
+				.title("Ghost")
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.user));
+			userMarker = mMap.addMarker(userMarkerOptions);
+			mMap.addMarker(userMarkerOptions);
+		}
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    MenuInflater inflater = getMenuInflater();
@@ -101,27 +161,24 @@ public class GameActivity extends Activity {
 	}
 	
 	private boolean setUpMapIfNeeded() {
-		//mMapFragment = MapFragment.newInstance();
-		//FragmentTransaction trans = getFragmentManager().beginTransaction();
-		//trans.add(R.id.mapContainer, mMapFragment).commit();
-		
-	    // Do a null check to confirm that we have not already instantiated the map.
-	    if (mMap == null) {
-	    	
-	    	Log.d(TAG, "Made it to setting up of map");
-	        mMap = mMapFragment.getMap();
-	        Log.d(TAG, "" + (mMap == null));
-	        // Check if we were successful in obtaining the map.
-	        if (mMap != null) {
-	            // The Map is verified. It is now safe to manipulate the map.
-	        	Log.d(TAG, "Moving Camera");
-	        	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
-	        	setUpStores();
-	        	return true;
-	        }
-	        
-	    }
-	    return false;
+		if (mMapFragment == null) {
+			mMapFragment = new MapFragment() {
+				@Override
+	            public void onActivityCreated(Bundle savedInstanceState) {
+	                super.onActivityCreated(savedInstanceState);
+	                
+        	    	mMap = this.getMap();
+        	        // Check if we were successful in obtaining the map.
+        	        if (mMap != null) {
+        	            // The Map is verified. It is now safe to manipulate the map.
+        	        	//Log.d(TAG, "Moving Camera");
+        	        	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
+        	        	setUpStores();
+        	        }
+        	    }  
+			};
+		}
+		return true;
 	}
 	
 	private void setUpStores() {
@@ -134,39 +191,39 @@ public class GameActivity extends Activity {
 		mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 			@Override
 			public boolean onMarkerClick(Marker arg0) {
-				Log.d("Store Marker", "Registered Marker Click");
+				//Log.d("Store Marker", "Registered Marker Click");
+				thread.setRunning(false);
+				DialogFragment hs = new StoreFragment();
+				FragmentManager fm = getFragmentManager();
+				hs.show(fm, "High Scores");
 				return false;
 			}
 		});
+
+		setUpUserLocation();
 		//generateGhost();
 	}
-	
-	/*private void generateGhost() {
-		Log.d(TAG, "Setting Store Up");
-		mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(38.036550, -78.507310))
-				.title("Ghost")
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite)));
-		mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-			@Override
-			public boolean onMarkerClick(Marker arg0) {
-				Log.d("Store Marker", "Registered Marker Click");
-				return false;
-			}
-		});
-	}*/
-	
-	private void updateScreen(ArrayList<Ghosts> g) {
-		Log.d(TAG, "Updating");
-		Log.d(TAG, g.toString());
-		ghosts = g;
-		for (Ghosts ghost: g)
-			Log.d("updateScreen", ghost.toString());
 		
+	public void updateScreen(ArrayList<Ghosts> g) {
+		ghosts = g;
+
+		//Log.d("GameActivity", "User Location about to be updated");
+		
+		Criteria c = new Criteria();
+		c.setHorizontalAccuracy(3);
+		String bestProvider = manager.getBestProvider(c, true);
+		userLocation = manager.getLastKnownLocation(bestProvider);
+		if (userLocation == null) {
+			bestProvider = "network";
+			userLocation = manager.getLastKnownLocation(bestProvider);
+		}
+		//Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
+		
+		//Log.d("GameActivity", "User Location about to be updated");
 		for (Ghosts ghost: ghosts) {
-			Log.d(TAG, "Gets into loop");
-			Log.d(TAG, "" + (ghostMap.keySet().toString()));
-			Log.d(TAG, "" + (ghostMap.keySet().toString()));
+			//Log.d(TAG, "Gets into loop");
+			Log.d(TAG, "" + (ghostMap.keySet().size()));
+			//Log.d(TAG, "" + (ghostMap.keySet().toString()));
 			if (!ghostMap.keySet().contains(ghost)) {
 				//Log.d(TAG, "Can't do if block");
 				MarkerOptions a = new MarkerOptions()
@@ -174,22 +231,39 @@ public class GameActivity extends Activity {
 					.title("Ghost")
 					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite));
 				Marker m = mMap.addMarker(a);
+				mMap.addMarker(a);
 				ghostMap.put(ghost, m);
+				Location tempLoc = new Location("Ghost"); 
+				tempLoc.setLatitude(ghost.getXCoord());
+				tempLoc.setLongitude(ghost.getYCoord());
+				ghostLocationMap.put(ghost, tempLoc);
 			}
 			else {				
 				//Log.d(TAG, "Can't do else block");
 				ghostMap.get(ghost).setPosition(new LatLng(ghost.getXCoord(), ghost.getYCoord()));
+				Location tempLoc = new Location("Ghost"); 
+				tempLoc.setLatitude(ghost.getXCoord());
+				tempLoc.setLongitude(ghost.getYCoord());
+				ghostLocationMap.put(ghost, tempLoc);
 			}
+		}
+		
+		for (Ghosts ghost: ghosts) {
+			proximityCheck(ghost);
 		}
 	}
 	
+	private void proximityCheck(Ghosts ghost) {
+		
+	}
+
 	@Override
 	public void onStart() {
 		super.onStart();
 		if (setUpMapIfNeeded() && thread == null) {
-			Log.d(TAG, "onStart");
-			thread = new GhostThread();
+			thread = new GhostThread(this);
 			thread.execute();
+			
 		}
 	}
 	
@@ -197,94 +271,10 @@ public class GameActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		if (setUpMapIfNeeded() && thread == null) {
-			thread = new GhostThread();
-			Log.d(TAG, "onResume");
-			//thread.execute();
+			thread = new GhostThread(this);
 		}
+
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
-	}
-	
-	public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
-
-		private SurfaceHolder surfaceHolder;
-		private Images panel;
-		private ArrayList<Ghosts> ghosts;
-		private boolean run = false;
-		private long timer;
-		private boolean cancel = false;
-		
-		private GhostThread(SurfaceHolder surfaceHolder, Images panel) {
-			this.surfaceHolder = surfaceHolder;
-			this.panel = panel;
-			panel.onInitalize();
-		}
-		 
-		private GhostThread() {
-			ghosts = new ArrayList<Ghosts>();
-			setRunning(true);
-			//doInBackground();
-		}
-		
-		public void setRunning(boolean value) {
-			run = value;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected Void doInBackground(Void... params) {
-			Canvas c;
-			timer = System.currentTimeMillis();
-			ghosts.add(new Ghosts(38.036550, -78.507310));
-			while (true) {
-				if (run){
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					for (Ghosts g: ghosts) {
-						double x = g.getXCoord();
-						double y = g.getYCoord();
-						
-						x += 0.0001;
-						y += 0.0001;
-						g.updateCords(x, y);
-					}
-					publishProgress(ghosts);
-					//publishProgress();
-					/*
-					c = null;
-					panel.onUpdate(timer);
-					try {
-						c = surfaceHolder.lockCanvas(null);
-						synchronized (surfaceHolder) {
-							//panel.onDraw(c);
-						}
-					} finally {
-						// do this in a finally so that if an exception is thrown
-						// during the above, we don't leave the Surface in an
-						// inconsistent state
-						if (c != null) {
-							surfaceHolder.unlockCanvasAndPost(c);
-						}
-					}
-					*/
-					if (cancel)
-						break;
-				}
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onProgressUpdate(ArrayList<Ghosts>...g) {
-			Log.d("GhostThread", "onProgressUpdate");
-			for (ArrayList<Ghosts> list: g)
-				for (Ghosts ghost: list)
-					Log.d("GhostThread", ghost.toString());
-			updateScreen(g[0]);
-		}
 	}
 }
 

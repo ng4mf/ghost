@@ -67,6 +67,7 @@ int drawable ic_plusone_small_off_client 0x7f020021
 int drawable ic_plusone_standard_off_client 0x7f020022
 int drawable ic_plusone_tall_off_client 0x7f020023
 int drawable ic_todo_list_icon 0x7f020024
+int drawable user 0x7f020025
 int id ViewPager 0x7f050005
 int id continue_paused_game 0x7f05000a
 int id difficulty_adjustor 0x7f05000b
@@ -128,6 +129,7 @@ int string morgan 0x7f060022
 int string neeraj 0x7f060020
 int string new_game 0x7f06001c
 int string okay 0x7f06001f
+int string store 0x7f060026
 int string success_toast 0x7f060025
 int style AppBaseTheme 0x7f090000
 int style AppTheme 0x7f090001

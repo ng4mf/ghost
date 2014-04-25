@@ -13,5 +13,6 @@
     <string name="benjamin">Benjamin Stokes</string>
     <string name="cs">University of Virginia CS2110 Spring 2014</string>
     <string name="success_toast">Success!</string>
+    <string name="store">Store</string>
 
 </resources>
