@@ -1,8 +1,9 @@
 package edu.cs2110.actors;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,6 +23,7 @@ public class Ghosts {
 	private double[] direction;
 	
 	private LatLng cords;
+	private Location loc;
 	
 	private int health;
 	private int power;
@@ -35,6 +37,8 @@ public class Ghosts {
 		//Randomized starting position
 		xCoord = 100 + Math.random()*2 - 1;
 		yCoord = 100 + Math.random()*2 - 1;
+
+		loc = new Location("Ghost");
 		
 		health = 10;
 		power = 3;
@@ -66,6 +70,10 @@ public class Ghosts {
 		xCoord = x;
 		yCoord = y;
 		cords = new LatLng(xCoord, yCoord);
+		loc = new Location("Ghost");
+		loc.setLatitude(x);
+		loc.setLongitude(y);
+		
 	}
 	
 	
@@ -86,6 +94,10 @@ public class Ghosts {
 		setXCoord(x);
 		setYCoord(y);
 		cords = new LatLng(x,y);
+		//Log.d("Ghosts:", "Error about to occur?");
+		loc.setLatitude(x);
+		loc.setLongitude(y);
+		//Log.d("Ghosts:", "Error did not occur");
 	}
 	
 	public double getSpeed(){
@@ -129,10 +141,16 @@ public class Ghosts {
 	
 	public void setXCoord(double value) {
 		xCoord = value;
+		loc.setLatitude(value);
 	}
 	
 	public void setYCoord(double value) {
 		yCoord = value;
+		loc.setLongitude(value);
+	}
+	
+	public Location getLocation() {
+		return loc;
 	}
 	
 	public void update(long gameTime) {

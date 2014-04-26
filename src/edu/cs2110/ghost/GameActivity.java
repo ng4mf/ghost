@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -53,7 +54,7 @@ public class GameActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_activity_fragment);
-		Log.d(TAG, "Made GameActivity");
+		//Log.d(TAG, "Made GameActivity");
 		
 		int x = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if (x != ConnectionResult.SUCCESS) {
@@ -118,7 +119,7 @@ public class GameActivity extends Activity {
 		manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listen);
 		
 		
-		Log.d("UserLoc Setup", "Calling last location");
+		//Log.d("UserLoc Setup", "Calling last location");
 		Criteria c = new Criteria();
 		c.setHorizontalAccuracy(3);
 		String bestProvider = manager.getBestProvider(c, true);
@@ -127,7 +128,7 @@ public class GameActivity extends Activity {
 			bestProvider = "network";
 			userLocation = manager.getLastKnownLocation(bestProvider);
 		}
-		Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
+		//Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
 		if (userMarker == null) {
 			userMarkerOptions = new MarkerOptions()
 				.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
@@ -184,7 +185,7 @@ public class GameActivity extends Activity {
 	private void setUpStores() {
 		// 38.036558, -78.507319
 		// UVA Bookstore Coordinates
-		Log.d(TAG, "Setting Store Up");
+		//Log.d(TAG, "Setting Store Up");
 		mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(38.036558, -78.507319))
 				.title("Store"));
@@ -205,8 +206,8 @@ public class GameActivity extends Activity {
 	}
 	
 	public void updateScreen(ArrayList<Ghosts> g) {
-		Log.d(TAG, "Updating");
-		Log.d(TAG, g.toString());
+		//Log.d(TAG, "Updating");
+		//Log.d(TAG, g.toString());
 		ghosts = g;
 
 		//Log.d("GameActivity", "User Location about to be updated");
@@ -224,7 +225,7 @@ public class GameActivity extends Activity {
 		//Log.d("GameActivity", "User Location about to be updated");
 		for (Ghosts ghost: ghosts) {
 			//Log.d(TAG, "Gets into loop");
-			Log.d(TAG, "" + (ghostMap.keySet().size()));
+			//Log.d(TAG, "" + (ghostMap.keySet().size()));
 			//Log.d(TAG, "" + (ghostMap.keySet().toString()));
 			if (!ghostMap.keySet().contains(ghost)) {
 				//Log.d(TAG, "Can't do if block");
@@ -252,11 +253,18 @@ public class GameActivity extends Activity {
 		
 		for (Ghosts ghost: ghosts) {
 			proximityCheck(ghost);
+			//Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
+			//toast.show();
 		}
 	}
 	
 	private void proximityCheck(Ghosts ghost) {
-		
+		Log.d("GameActivity", "Distance to Ghost: " + userLocation.distanceTo(ghost.getLocation()));
+		if (userLocation.distanceTo(ghost.getLocation()) < 100) {
+			Log.d(TAG, "Proximate");
+			Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
+			toast.show();
+		}
 	}
 
 	@Override

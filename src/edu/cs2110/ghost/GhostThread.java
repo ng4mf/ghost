@@ -22,11 +22,11 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	}
 	
 	public GhostThread(GameActivity g){
-		Log.d("GhostThread", "Initiating GhostThread");
+		//Log.d("GhostThread", "Initiating GhostThread");
 		master = g;
 		ghosts = new ArrayList<Ghosts>();
 		setRunning(true);
-		Log.d("GhostThread", "GhostThread Initiated");
+		//Log.d("GhostThread", "GhostThread Initiated");
 	}
 	 
 	public void setRunning(boolean value) {
@@ -38,17 +38,21 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	protected Void doInBackground(Void... params) {
 		//
 		ghosts.add(new Ghosts(38.036550, -78.507310));
-		while (run) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		while (true) {
+			if (run) {
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				for (Ghosts g: ghosts) {
+					determineMovement(g);
+				}
+				time += 1;
+				addGhost();
+				publishProgress(ghosts);
 			}
-			for (Ghosts g: ghosts) {
-				determineMovement(g);
-			}
-			publishProgress(ghosts);
 			if (cancel){
 				break;
 			}
@@ -57,11 +61,11 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	}
 	
 	public void addGhost() {
-		Log.d(TAG, "Dif: " + (System.currentTimeMillis()-time));
+		//Log.d(TAG, "Dif: " + (System.currentTimeMillis()-time));
 		if (time > 5) {
 			time = 0;
 			ghosts.add(new Ghosts(38.036550, -78.507310));
-			Log.d(TAG, "Added Ghost");
+			//Log.d(TAG, "Added Ghost");
 		}
 	}
 	
@@ -102,11 +106,11 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	
 	@Override
 	protected void onProgressUpdate(ArrayList<Ghosts>...g) {
-		for (ArrayList<Ghosts> list: g){
+		/*for (ArrayList<Ghosts> list: g){
 			for (Ghosts ghost: list){
-				Log.d("GhostThread", ghost.toString());
+				//Log.d("GhostThread", ghost.toString());
 			}
-		}
+		}*/
 		master.updateScreen(g[0]);
 	}
 
