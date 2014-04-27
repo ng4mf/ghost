@@ -209,11 +209,13 @@ public class GameActivity extends Activity {
 				.title("Store"));
 		mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 			@Override
-			public boolean onMarkerClick(Marker arg0) {
+			public boolean onMarkerClick(Marker m) {
 				//Log.d("Store Marker", "Registered Marker Click");
-				DialogFragment hs = StoreDialog.newInstance(thread, player);
-				FragmentManager fm = getFragmentManager();
-				hs.show(fm, "Store");
+				if (m.getTitle().equals("Store")) {
+					DialogFragment hs = StoreDialog.newInstance(thread, player);
+					FragmentManager fm = getFragmentManager();
+					hs.show(fm, "Store");
+				}
 				return false;
 			}
 		});

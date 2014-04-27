@@ -67,6 +67,7 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 				@Override
 				public void onClick(View arg0) {
 					player.addItem("Bomb", 1);
+					mMoney.setText("Wallet Contains: $" + player.getCurrency());
 				}
 	        });
 
@@ -79,6 +80,7 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 				@Override
 				public void onClick(View arg0) {
 					player.addItem("Power Bomb", 1);
+					mMoney.setText("Wallet Contains: $" + player.getCurrency());
 				}
 	        });
 			if (player.getCurrency() < powerBombCost)
@@ -89,6 +91,7 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 				@Override
 				public void onClick(View arg0) {
 					player.addItem("Invincibility", 1);
+					mMoney.setText("Wallet Contains: $" + player.getCurrency());
 				}
 	        });
 			if (player.getCurrency() < invincibilityCost)
@@ -99,6 +102,7 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 				@Override
 				public void onClick(View arg0) {
 					player.addItem("+Health", 1);
+					mMoney.setText("Wallet Contains: $" + player.getCurrency());
 				}
 	        });
 			if (player.getCurrency() < healthCost)
@@ -109,6 +113,7 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 				@Override
 				public void onClick(View arg0) {
 					player.addItem("Stealthy", 1);
+					mMoney.setText("Wallet Contains: $" + player.getCurrency());
 				}
 	        });
 			if (player.getCurrency() < stealthCost)
