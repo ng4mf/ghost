@@ -39,18 +39,15 @@ public class ChoosePlayerFragment extends Fragment {
 		healthButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Player player = new Player("Health", 20, 1, 1000, 0.000074917); // 2*radius
-																				// is
-																				// half
-																				// the
-																				// coordinate
-																				// width
-																				// olsson
-																				// hall
-				b = new Bundle();
-				//b.putInt(key, value)
 				Log.d(TAG, "Health Player Has Been Created And Registered");
 				Intent i = new Intent(getActivity(), GameActivity.class);// modify
+				b = new Bundle();
+				b.putString("name", "Health");
+				b.putInt("maxHealth", 20);
+				b.putInt("power", 1);
+				b.putInt("currency", 1000);
+				b.putDouble("attack", 0.000074917);
+				i.putExtras(b);
 				startActivity(i);
 			}
 		});
@@ -61,11 +58,16 @@ public class ChoosePlayerFragment extends Fragment {
 		strengthButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Player splayer = new Player("Strength", 10, 2, 1000,
-						0.000074917); // 2*radius is half the coordinate width
-										// olsson hall
 				Log.d(TAG, "Strength Player Has Been Created And Registered");
 				Intent i = new Intent(getActivity(), GameActivity.class);// modify
+
+				b = new Bundle();
+				b.putString("name", "Health");
+				b.putInt("maxHealth", 10);
+				b.putInt("power", 2);
+				b.putInt("currency", 1000);
+				b.putDouble("attack", 0.000074917);
+				i.putExtras(b);
 				startActivity(i);
 			}
 		});
@@ -75,15 +77,17 @@ public class ChoosePlayerFragment extends Fragment {
 		reachButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Player player = new Player("Reach", 10, 1, 1000, 0.000149833); // 2*radius
-																				// is
-																				// the
-																				// coordinate
-																				// width
-																				// olsson
-																				// hall
 				Log.d(TAG, "Reach Player Has Been Created And Registered");
 				Intent i = new Intent(getActivity(), GameActivity.class);// modify
+
+				b = new Bundle();
+				b.putString("name", "Health");
+				b.putInt("maxHealth", 10);
+				b.putInt("power", 1);
+				b.putInt("currency", 1000);
+				b.putDouble("attack", 0.000149833);
+
+				i.putExtras(b);
 				startActivity(i);
 			}
 		});

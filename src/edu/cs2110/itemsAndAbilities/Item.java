@@ -1,5 +1,6 @@
 package edu.cs2110.itemsAndAbilities;
 
+import android.os.Parcelable;
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
 
@@ -19,4 +20,5 @@ public interface Item {
 	
 	public void decreaseCount(int count);
 
+	
 }

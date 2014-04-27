@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -57,6 +58,19 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_activity_fragment);
 		//Log.d(TAG, "Made GameActivity");
+		Intent i = getIntent();
+		//player = (Player)i.getSerializableExtra("player");
+		Bundle stats = i.getExtras();
+		
+		//Player(String name, int maxHealth, int power, double currency,
+		//double attackDistance)
+		player = new Player (stats.getString("name"), stats.getInt("maxHealth"),
+				stats.getInt("power"), stats.getInt("currency"), stats.getDouble("attack"));
+		Log.d(TAG, player.getUserName());
+		Log.d(TAG, "" + player.getHealth());
+		Log.d(TAG, "" + player.getPower());
+		Log.d(TAG, "" + player.getCurrency());
+		Log.d(TAG, "" + player.getAttackRadius());
 		
 		int x = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if (x != ConnectionResult.SUCCESS) {
@@ -129,6 +143,9 @@ public class GameActivity extends Activity {
 			bestProvider = "network";
 			userLocation = manager.getLastKnownLocation(bestProvider);
 		}
+		
+		player.setLocation(userLocation);
+		
 		//Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
 		if (userMarker == null) {
 			userMarkerOptions = new MarkerOptions()
@@ -194,7 +211,7 @@ public class GameActivity extends Activity {
 			@Override
 			public boolean onMarkerClick(Marker arg0) {
 				//Log.d("Store Marker", "Registered Marker Click");
-				DialogFragment hs = StoreDialog.newInstance(thread);
+				DialogFragment hs = StoreDialog.newInstance(thread, player);
 				FragmentManager fm = getFragmentManager();
 				hs.show(fm, "Store");
 				return false;
@@ -220,6 +237,9 @@ public class GameActivity extends Activity {
 			bestProvider = "network";
 			userLocation = manager.getLastKnownLocation(bestProvider);
 		}
+		
+		player.setLocation(userLocation);
+		
 		//Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
 		
 		//Log.d("GameActivity", "User Location about to be updated");

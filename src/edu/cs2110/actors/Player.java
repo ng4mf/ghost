@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 import edu.cs2110.itemsAndAbilities.Bomb;
 import edu.cs2110.itemsAndAbilities.Invincibility;
 import edu.cs2110.itemsAndAbilities.Item;
@@ -26,12 +28,14 @@ public class Player {
 	private Location location;
 	private boolean stealthEffect;
 	private boolean invincibilityEffect;
+	
+	private double id;
 
-	public Item bomb;
-	public Item powerBomb;
-	public Item plusHealth;
-	public Item invincibility;
-	public Item stealthy;
+	private Item bomb;
+	private Item powerBomb;
+	private Item plusHealth;
+	private Item invincibility;
+	private Item stealthy;
 
 	private Bitmap animation;
 	private int currentFrame;
@@ -41,6 +45,45 @@ public class Player {
 	private Rect hitbox;
 	private int numFrames;
 	private int fps;
+	
+	private int bombCost;
+	private int powerBombCost;
+	private int invincibilityCost;
+	private int stealthCost;
+	private int healthCost;
+
+	/**
+	 * Constructors for Player
+	 */
+	public Player(String name, int maxHealth, int power, double currency,
+			double attackDistance) {
+		this.userName = name;
+		this.health = maxHealth;
+		this.maxHealth = maxHealth;
+		this.power = power;
+		this.currency = currency;
+		this.attackDistance = attackDistance;
+		this.xCoord = 0;
+		this.yCoord = 0;
+		this.stealthEffect = false;
+		this.invincibilityEffect = false;
+	
+		this.bomb = new Bomb();
+		this.powerBomb = new PowerBombs();
+		this.plusHealth = new PlusHealth();
+		this.invincibility = new Invincibility();
+		this.stealthy = new Stealthy();
+		
+		this.id = 2;
+		
+		this.location = new Location("player");
+		
+		this.bombCost = 10;
+		this.powerBombCost = 20;
+		this.invincibilityCost = 15;
+		this.healthCost = 15;
+		this.stealthCost = 25;
+	}
 
 	/**
 	 * Getters and Setters
@@ -150,29 +193,10 @@ public class Player {
 		this.invincibilityEffect = invincibility;
 	}
 
-	/**
-	 * Constructors for Player
-	 */
-	public Player(String name, int maxHealth, int power, double currency,
-			double attackDistance) {
-		this.userName = name;
-		this.health = maxHealth;
-		this.maxHealth = maxHealth;
-		this.power = power;
-		this.currency = currency;
-		this.attackDistance = attackDistance;
-		this.xCoord = 0;
-		this.yCoord = 0;
-		this.stealthEffect = false;
-		this.invincibilityEffect = false;
-
-		this.bomb = new Bomb();
-		this.powerBomb = new PowerBombs();
-		this.plusHealth = new PlusHealth();
-		this.invincibility = new Invincibility();
-		this.stealthy = new Stealthy();
+	public double getId() {
+		return id;
 	}
-
+	
 	/**
 	 * 4 methods Taken from ghost class, not sure if it will be utilized
 	 * correctly here. May need to be edited or removed altogether
@@ -261,18 +285,23 @@ public class Player {
 		if (this.bomb.getName().equals(itemName)) {
 			retVal = true;
 			this.bomb.increaseCount(count);
+			this.currency -= bombCost;
 		} else if (this.powerBomb.getName().equals(itemName)) {
 			retVal = true;
 			this.powerBomb.increaseCount(count);
+			this.currency -= powerBombCost;
 		} else if (this.plusHealth.getName().equals(itemName)) {
 			retVal = true;
 			this.plusHealth.increaseCount(count);
+			this.currency -= healthCost;
 		} else if (this.invincibility.getName().equals(itemName)) {
 			retVal = true;
 			this.invincibility.increaseCount(count);
+			this.currency -= invincibilityCost;
 		} else if (this.stealthy.getName().equals(itemName)) {
 			retVal = true;
 			this.stealthy.increaseCount(count);
+			this.currency -= stealthCost;
 		}
 
 		return retVal;
@@ -458,11 +487,4 @@ public class Player {
 		}
 
 	}
-	/*
-	 * public static void main(String[] args) { Player one = new
-	 * Player("Player A", 10, 1, 100, 10); Ghosts g = new Ghosts();
-	 * one.addItem("Power Bomb", 10); System.out.println(one.getHealth());
-	 * one.usePowerBomb(g); System.out.println(one.getHealth()); }
-	 */
-
 }

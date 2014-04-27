@@ -1,5 +1,7 @@
 package edu.cs2110.itemsAndAbilities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
 
@@ -21,6 +23,7 @@ public class Bomb implements Item {
 		this.name = "Bomb";
 		this.count = 0;
 	}
+	
 
 	@Override
 	public void useItem(Ghosts g) {

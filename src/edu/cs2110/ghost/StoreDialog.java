@@ -9,10 +9,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import edu.cs2110.actors.Player;
 
 public class StoreDialog extends DialogFragment implements DialogInterface.OnDismissListener {
 	
 	private static StoreDialog store;
+	
+	private TextView mMoney;
 	
 	private Button mBuyBomb;
 	private Button mBuyPowerBomb;
@@ -21,7 +24,14 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 	private Button mBuyStealth;
 	private Button mExitStore;
 	
+	private static Player player;
 	private static GhostThread thread;
+	
+	private int bombCost;
+	private int powerBombCost;
+	private int invincibilityCost;
+	private int stealthCost;
+	private int healthCost;
 	
 	private static final int REQUEST_DATE = 0;
 	
@@ -29,10 +39,12 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 		
 	}
 	
-	public static StoreDialog newInstance(GhostThread t) {
+	public static StoreDialog newInstance(GhostThread t, Player p) {
 		store = new StoreDialog();
 		thread = t;
 		thread.setRunning(false);
+		player = p;
+		
 		return store;
 	}
 	
@@ -41,45 +53,66 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 	            Bundle savedInstanceState) {
 	        View v = inflater.inflate(R.layout.store, container);
 	        
+	        this.bombCost = 10;
+			this.powerBombCost = 20;
+			this.invincibilityCost = 15;
+			this.healthCost = 15;
+			this.stealthCost = 25;
+			
+			mMoney = (TextView)v.findViewById(R.id.money_count);
+			mMoney.setText("Wallet Contains: $" + player.getCurrency());
+			
 	        mBuyBomb = (Button)v.findViewById(R.id.buy_bomb);
 	        mBuyBomb.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					
+					player.addItem("Bomb", 1);
 				}
 	        });
+
+			if (player.getCurrency() < bombCost)
+				mBuyBomb.setEnabled(false);
+	        
 	        
 	        mBuyPowerBomb = (Button)v.findViewById(R.id.buy_power_bomb);
 	        mBuyPowerBomb.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					
+					player.addItem("Power Bomb", 1);
 				}
 	        });
+			if (player.getCurrency() < powerBombCost)
+				mBuyPowerBomb.setEnabled(false);
 	        
 	        mBuyInvincibility = (Button)v.findViewById(R.id.buy_invincibility);
 	        mBuyInvincibility.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					
+					player.addItem("Invincibility", 1);
 				}
 	        });
+			if (player.getCurrency() < invincibilityCost)
+				mBuyInvincibility.setEnabled(false);
 	        
 	        mBuyHealth = (Button)v.findViewById(R.id.buy_health);
 	        mBuyHealth.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					
+					player.addItem("+Health", 1);
 				}
 	        });
+			if (player.getCurrency() < healthCost)
+				mBuyHealth.setEnabled(false);
 	        
 	        mBuyStealth = (Button)v.findViewById(R.id.buy_stealth);
 	        mBuyStealth.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					
+					player.addItem("Stealthy", 1);
 				}
 	        });
+			if (player.getCurrency() < stealthCost)
+				mBuyStealth.setEnabled(false);
 	        
 	        mExitStore = (Button)v.findViewById(R.id.exit_store);
 	        mExitStore.setOnClickListener(new OnClickListener() {
@@ -99,18 +132,4 @@ public class StoreDialog extends DialogFragment implements DialogInterface.OnDis
 		super.dismiss();
 		thread.setRunning(true);
 	}
-	
-//	@Override
-//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//		if (resultCode != Activity.RESULT_OK) return;
-//		if (requestCode == REQUEST_DATE) {
-//			Date date = (Date)data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-//			temp.setDate(date);
-//			updateDate();
-//		}
-//	}
-	
-//	private void updateDate() {
-//		mDateButton.setText(temp.getDate().toString());
-//	}
 }

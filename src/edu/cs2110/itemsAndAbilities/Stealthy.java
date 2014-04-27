@@ -1,5 +1,6 @@
 package edu.cs2110.itemsAndAbilities;
 
+import android.os.Parcel;
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
 
