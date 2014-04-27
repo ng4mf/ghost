@@ -1,10 +1,17 @@
 package edu.cs2110.actors;
 
 import java.util.Random;
-import edu.cs2110.itemsAndAbilities.*;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.location.Location;
+import edu.cs2110.itemsAndAbilities.Bomb;
+import edu.cs2110.itemsAndAbilities.Invincibility;
+import edu.cs2110.itemsAndAbilities.Item;
+import edu.cs2110.itemsAndAbilities.PlusHealth;
+import edu.cs2110.itemsAndAbilities.PowerBombs;
+import edu.cs2110.itemsAndAbilities.Stealthy;
 
 public class Player {
 
@@ -16,14 +23,15 @@ public class Player {
 	private double attackDistance;
 	private double xCoord;
 	private double yCoord;
+	private Location location;
 	private boolean stealthEffect;
 	private boolean invincibilityEffect;
 
-	private Item bomb;
-	private Item powerBomb;
-	private Item plusHealth;
-	private Item invincibility;
-	private Item stealthy;
+	public Item bomb;
+	public Item powerBomb;
+	public Item plusHealth;
+	public Item invincibility;
+	public Item stealthy;
 
 	private Bitmap animation;
 	private int currentFrame;
@@ -116,6 +124,14 @@ public class Player {
 
 	public void setYCoord(double yCoord) {
 		this.yCoord = yCoord;
+	}
+	
+	public Location getLocation() {
+		return location;
+	}
+	
+	public void setLocation(Location loc) {
+		location = loc;
 	}
 
 	public boolean isStealthyEffect() {

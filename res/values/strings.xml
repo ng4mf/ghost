@@ -14,5 +14,16 @@
     <string name="cs">University of Virginia CS2110 Spring 2014</string>
     <string name="success_toast">Success!</string>
     <string name="store">Store</string>
-
+    <string name="bomb">Bomb</string>
+    <string name="bomb_cost">$10</string>
+    <string name="power_bomb">Power Bomb</string>
+    <string name="power_bomb_cost">$20</string>
+    <string name="invincibility">Invincibility Potion</string>
+    <string name="invincibility_cost">$15</string>
+    <string name="health">Health Potion</string>
+    <string name="health_cost">$15</string>
+    <string name="stealth">Stealth Potion</string>
+    <string name="stealth_cost">$25</string>
+    <string name="buy">Buy</string>
+    
 </resources>

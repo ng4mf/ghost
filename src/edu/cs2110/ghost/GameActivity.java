@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.cs2110.actors.Ghosts;
+import edu.cs2110.actors.Player;
 
 public class GameActivity extends Activity {
 	private static final String TAG = "GameActivity";
@@ -42,6 +43,7 @@ public class GameActivity extends Activity {
 	private Map<Ghosts, Marker> ghostMap = new HashMap<Ghosts, Marker>();
 	private Map<Ghosts, Location> ghostLocationMap = new HashMap<Ghosts, Location>();
 	private GhostThread thread;
+	private Player player;
 	
 	private Marker userMarker;
 	private MarkerOptions userMarkerOptions;
@@ -96,7 +98,6 @@ public class GameActivity extends Activity {
 	}
 	
 	private void setUpUserLocation() {
-
 		//Log.d("UserLoc Setup", "Starting method");
 		// Acquire a reference to the system Location Manager
 		manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -193,10 +194,9 @@ public class GameActivity extends Activity {
 			@Override
 			public boolean onMarkerClick(Marker arg0) {
 				//Log.d("Store Marker", "Registered Marker Click");
-				thread.setRunning(false);
-				DialogFragment hs = new StoreFragment();
+				DialogFragment hs = StoreDialog.newInstance(thread);
 				FragmentManager fm = getFragmentManager();
-				hs.show(fm, "High Scores");
+				hs.show(fm, "Store");
 				return false;
 			}
 		});

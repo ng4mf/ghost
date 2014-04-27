@@ -18,6 +18,7 @@ public class ChoosePlayerFragment extends Fragment {
 	private Button healthButton;
 	private Button strengthButton;
 	private Button reachButton;
+	private Bundle b;
 	private static final String TAG = "ChoosePlayerFragment";
 
 	@Override
@@ -46,6 +47,8 @@ public class ChoosePlayerFragment extends Fragment {
 																				// width
 																				// olsson
 																				// hall
+				b = new Bundle();
+				//b.putInt(key, value)
 				Log.d(TAG, "Health Player Has Been Created And Registered");
 				Intent i = new Intent(getActivity(), GameActivity.class);// modify
 				startActivity(i);

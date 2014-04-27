@@ -236,24 +236,41 @@ containing a value of this type.
         public static final int TextView01=0x7f050010;
         public static final int TextView02=0x7f050013;
         public static final int ViewPager=0x7f050005;
+        public static final int bomb=0x7f05001c;
+        public static final int bomb_cost=0x7f05001d;
+        public static final int buy_bomb=0x7f05001e;
+        public static final int buy_health=0x7f050027;
+        public static final int buy_invincibility=0x7f050024;
+        public static final int buy_power_bomb=0x7f050021;
+        public static final int buy_stealth=0x7f05002a;
         public static final int continue_paused_game=0x7f050016;
         public static final int create_health_character=0x7f05000b;
         public static final int create_reach_character=0x7f050011;
         public static final int create_strength_character=0x7f05000e;
         public static final int difficulty_adjustor=0x7f050017;
         public static final int digitalClock1=0x7f050019;
+        public static final int exit_store=0x7f05002b;
         public static final int fragmentContainer=0x7f050006;
         public static final int gameContainer=0x7f05001a;
+        public static final int health=0x7f050025;
+        public static final int health_cost=0x7f050026;
         public static final int high_scores=0x7f050018;
         public static final int hybrid=0x7f050004;
         public static final int imageView1=0x7f050007;
+        public static final int invincibility=0x7f050022;
+        public static final int invincibility_cost=0x7f050023;
         public static final int mapContainer=0x7f050014;
+        public static final int money_count=0x7f05001b;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int pause_game=0x7f05001b;
-        public static final int play_game=0x7f05001c;
+        public static final int pause_game=0x7f05002c;
+        public static final int play_game=0x7f05002d;
+        public static final int power_bomb=0x7f05001f;
+        public static final int power_bomb_cost=0x7f050020;
         public static final int satellite=0x7f050002;
         public static final int start_new_game=0x7f050015;
+        public static final int stealth=0x7f050028;
+        public static final int stealth_cost=0x7f050029;
         public static final int terrain=0x7f050003;
         public static final int textView1=0x7f05000d;
         public static final int textView2=0x7f05000a;
@@ -273,6 +290,7 @@ containing a value of this type.
         public static final int fragment_map=0x7f030003;
         public static final int fragment_menu=0x7f030004;
         public static final int game_activity_fragment=0x7f030005;
+        public static final int store=0x7f030006;
     }
     public static final class menu {
         public static final int action_bar_actions=0x7f0a0000;
@@ -303,6 +321,9 @@ containing a value of this type.
          */
         public static final int auth_client_using_bad_version_title=0x7f060014;
         public static final int benjamin=0x7f060023;
+        public static final int bomb=0x7f060027;
+        public static final int bomb_cost=0x7f060028;
+        public static final int buy=0x7f060031;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -377,12 +398,20 @@ containing a value of this type.
         public static final int continue_game=0x7f06001d;
         public static final int cs=0x7f060024;
         public static final int difficulty=0x7f06001b;
+        public static final int health=0x7f06002d;
+        public static final int health_cost=0x7f06002e;
         public static final int high_scores=0x7f06001e;
+        public static final int invincibility=0x7f06002b;
+        public static final int invincibility_cost=0x7f06002c;
         public static final int jeremy=0x7f060021;
         public static final int morgan=0x7f060022;
         public static final int neeraj=0x7f060020;
         public static final int new_game=0x7f06001c;
         public static final int okay=0x7f06001f;
+        public static final int power_bomb=0x7f060029;
+        public static final int power_bomb_cost=0x7f06002a;
+        public static final int stealth=0x7f06002f;
+        public static final int stealth_cost=0x7f060030;
         public static final int store=0x7f060026;
         public static final int success_toast=0x7f060025;
     }
