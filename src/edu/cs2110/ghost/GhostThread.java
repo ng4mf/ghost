@@ -1,6 +1,8 @@
 package edu.cs2110.ghost;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -8,11 +10,13 @@ import edu.cs2110.actors.Ghosts;
 
 public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 
-	private ArrayList<Ghosts> ghosts;
+	private Collection<Ghosts> ghosts;
 	private boolean run = false;
 	private boolean cancel = false;
 	private static final String TAG = "GhostThread";
 	private int time = 0;
+	
+	private boolean removed = false;
 	
 	private GameActivity master = null;
 	
@@ -20,11 +24,12 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 		ghosts = new ArrayList<Ghosts>();
 		setRunning(true);
 	}
-	
+
 	public GhostThread(GameActivity g){
 		//Log.d("GhostThread", "Initiating GhostThread");
+		Log.d(TAG, "Started making thread");
 		master = g;
-		ghosts = new ArrayList<Ghosts>();
+		//ghosts = Collections.synchronizedCollection(master.getGhosts());
 		setRunning(true);
 		//Log.d("GhostThread", "GhostThread Initiated");
 	}
@@ -32,26 +37,48 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	public void setRunning(boolean value) {
 		run = value;
 	}
+	
+	public void setRemoved(boolean v) {
+		removed = v;
+	}
+	
+	public void setCanceled(boolean value) {
+		cancel = value;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Void doInBackground(Void... params) {
+	protected synchronized Void doInBackground(Void... params) {
 		//
-		ghosts.add(new Ghosts(38.036550, -78.507310));
+		//ghosts = master.getGhosts();
+		Log.d(TAG, "Started executing");
+		cancel = false;
 		while (true) {
 			if (run) {
+				//ghosts = master.getGhosts();
+				Log.d(TAG, "Did not die yet");
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				for (Ghosts g: ghosts) {
-					determineMovement(g);
-				}
+				//for (Ghosts g: master.getGhosts()) {
+				//	Log.d(TAG, "Changing ArrayList");
+				try {
+				master.changeGhosts("update", null);
+				//}
 				time += 1;
 				addGhost();
-				publishProgress(ghosts);
+				Log.d("Thread", "Ghost in list");
+				
+				//ghosts = master.getGhosts();
+
+				publishProgress((ArrayList<Ghosts>)(master.getGhosts()));
+				} catch (ConcurrentModificationException c) {
+					Log.d(TAG, c.getMessage().toString());
+					continue;
+				}
 			}
 			if (cancel){
 				break;
@@ -64,7 +91,9 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 		//Log.d(TAG, "Dif: " + (System.currentTimeMillis()-time));
 		if (time > 5) {
 			time = 0;
-			ghosts.add(new Ghosts(38.036550, -78.507310));
+			Log.d(TAG, "Almost added");
+			master.changeGhosts("add", new Ghosts(38.036550, -78.507310));
+			//ghosts.add(new Ghosts(38.036550, -78.507310));
 			//Log.d(TAG, "Added Ghost");
 		}
 	}
@@ -111,7 +140,8 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 				//Log.d("GhostThread", ghost.toString());
 			}
 		}*/
-		master.updateScreen(g[0]);
+		//master.updateScreen(g[0]);
+		master.changeGhosts("updateAll", null);
 	}
 
 }

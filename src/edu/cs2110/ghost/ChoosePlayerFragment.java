@@ -46,7 +46,7 @@ public class ChoosePlayerFragment extends Fragment {
 				b.putInt("maxHealth", 20);
 				b.putInt("power", 1);
 				b.putInt("currency", 1000);
-				b.putDouble("attack", 0.000074917);
+				b.putDouble("attack", 200);
 				i.putExtras(b);
 				startActivity(i);
 			}
@@ -66,7 +66,7 @@ public class ChoosePlayerFragment extends Fragment {
 				b.putInt("maxHealth", 10);
 				b.putInt("power", 2);
 				b.putInt("currency", 1000);
-				b.putDouble("attack", 0.000074917);
+				b.putDouble("attack", 200);
 				i.putExtras(b);
 				startActivity(i);
 			}
@@ -85,7 +85,7 @@ public class ChoosePlayerFragment extends Fragment {
 				b.putInt("maxHealth", 10);
 				b.putInt("power", 1);
 				b.putInt("currency", 1000);
-				b.putDouble("attack", 0.000149833);
+				b.putDouble("attack", 200);
 
 				i.putExtras(b);
 				startActivity(i);

@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,7 @@ import edu.cs2110.actors.Player;
 
 public class GameActivity extends Activity {
 	private static final String TAG = "GameActivity";
+	
 	private GoogleMap mMap;
 	private MapFragment mMapFragment;
 	private GoogleMapOptions options = new GoogleMapOptions();
@@ -53,6 +55,18 @@ public class GameActivity extends Activity {
 	private LocationManager manager;
 	private LocationListener listen;
 	
+	private Thread AsyncRunner;
+	
+	
+	
+	public ArrayList<Ghosts> getGhosts() {
+		return ghosts;
+	}
+	
+	public void setGhosts(ArrayList<Ghosts> g) {
+		ghosts = g;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,7 +75,8 @@ public class GameActivity extends Activity {
 		Intent i = getIntent();
 		//player = (Player)i.getSerializableExtra("player");
 		Bundle stats = i.getExtras();
-		
+
+		ghosts = new ArrayList<Ghosts>();
 		//Player(String name, int maxHealth, int power, double currency,
 		//double attackDistance)
 		player = new Player (stats.getString("name"), stats.getInt("maxHealth"),
@@ -216,6 +231,28 @@ public class GameActivity extends Activity {
 					FragmentManager fm = getFragmentManager();
 					hs.show(fm, "Store");
 				}
+				else if (m.getTitle().equals("Ghost")) {
+					//Log.d(TAG, "Ghost click registered");
+					for (Ghosts g: ghostMap.keySet()) {
+						if (player.inRange(g)) {
+							//Log.d(TAG, "Found ghost marker map");
+							/*Toast toast = Toast.makeText(getApplicationContext(), "" + g.getHealth(), Toast.LENGTH_SHORT);
+							toast.show();
+							
+							toast = Toast.makeText(getApplicationContext(), "" + g.getHealth(), Toast.LENGTH_SHORT);
+							toast.show();*/
+							player.useBomb(g);
+							Log.d(TAG, "Ghost Health: " + g.getHealth());
+							if (g.getHealth() <= 0) {
+								/*thread.cancel(true);
+								while(!thread.isCancelled()) {}*/
+								changeGhosts("remove", g);
+								break;
+//								thread.execute();
+							}
+						}
+					}
+				}
 				return false;
 			}
 		});
@@ -224,12 +261,17 @@ public class GameActivity extends Activity {
 		//generateGhost();
 	}
 	
-	public void updateScreen(ArrayList<Ghosts> g) {
-		//Log.d(TAG, "Updating");
-		//Log.d(TAG, g.toString());
-		ghosts = g;
-
-		//Log.d("GameActivity", "User Location about to be updated");
+	
+	
+	public void remove(Ghosts g) {
+		ghostMap.get(g).remove();
+		ghostMap.remove(g);
+		ghostLocationMap.remove(g);
+		ghosts.remove(g);
+	}
+	
+	private void updateScreen(ArrayList<Ghosts> g) {
+		//ghosts = g;
 		
 		Criteria c = new Criteria();
 		c.setHorizontalAccuracy(3);
@@ -242,47 +284,87 @@ public class GameActivity extends Activity {
 		
 		player.setLocation(userLocation);
 		
-		//Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
+		Log.d(TAG, "No trouble setting user location"); 
 		
-		//Log.d("GameActivity", "User Location about to be updated");
 		for (Ghosts ghost: ghosts) {
-			//Log.d(TAG, "Gets into loop");
-			//Log.d(TAG, "" + (ghostMap.keySet().size()));
-			//Log.d(TAG, "" + (ghostMap.keySet().toString()));
+			Log.d(TAG, "Can Call on list of ghosts");
 			if (!ghostMap.keySet().contains(ghost)) {
-				//Log.d(TAG, "Can't do if block");
+				Log.d(TAG, "Can call dependent data structures");
 				MarkerOptions a = new MarkerOptions()
-					.position(new LatLng(ghost.getXCoord(), ghost.getYCoord()))
+					.position(new LatLng(ghost.getLocation().getLatitude(), ghost.getLocation().getLongitude()))
 					.title("Ghost")
 					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite));
-				Marker m = mMap.addMarker(a);
-				mMap.addMarker(a);
+
+				Log.d(TAG, "Made markeroptions at: " + ghost.getLocation().getLatitude() + ", " + 
+						ghost.getLocation().getLongitude());
+				
+				Marker m = mMap.addMarker(new MarkerOptions()
+					.position(new LatLng(0, 0))
+					.title("Ghost")
+					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite)));
+
+				Log.d(TAG, "made marker");
+//				mMap.addMarker(a);
+
+				Log.d(TAG, "added marker to map");
 				ghostMap.put(ghost, m);
+
+				Log.d(TAG, "put ghost and marker on map");
+				
 				Location tempLoc = new Location("Ghost"); 
+				
 				tempLoc.setLatitude(ghost.getXCoord());
 				tempLoc.setLongitude(ghost.getYCoord());
+				
+				
 				ghostLocationMap.put(ghost, tempLoc);
+				Log.d(TAG, "Can update dependent data structures");
 			}
 			else {				
-				//Log.d(TAG, "Can't do else block");
+				Log.d(TAG, "Can start updating of existing ghosts");
 				ghostMap.get(ghost).setPosition(new LatLng(ghost.getXCoord(), ghost.getYCoord()));
 				Location tempLoc = new Location("Ghost"); 
 				tempLoc.setLatitude(ghost.getXCoord());
 				tempLoc.setLongitude(ghost.getYCoord());
 				ghostLocationMap.put(ghost, tempLoc);
+				Log.d(TAG, "Completed ghost position update");
 			}
 		}
 		
 		for (Ghosts ghost: ghosts) {
 			proximityCheck(ghost);
-			//Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
-			//toast.show();
+			/*Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
+			toast.show();*/
+		}
+	}
+	
+	public synchronized void changeGhosts(String command, Ghosts g) {
+		if (command.equals("add")) {
+			Log.d(TAG, "Almost there, adding ghost now");
+			ghosts.add(g);
+			Log.d(TAG, "Added ghost");
+		}
+		else if (command.equals("remove")) {
+			Log.d(TAG, "Started Ghost removal process");
+			remove(g);
+			Log.d(TAG, "Completed Ghost Removal");
+		}
+		else if (command.equals("update")) {
+			Log.d(TAG, "Updating");
+			for (Ghosts ghost: ghosts)
+				thread.determineMovement(ghost);
+			Log.d(TAG, "Completed update");
+		}
+		else if (command.equals("updateAll")) {
+			Log.d(TAG, command);
+			updateScreen(ghosts);
+			Log.d(TAG, command + " complete");
 		}
 	}
 	
 	private void proximityCheck(Ghosts ghost) {
-		Log.d("GameActivity", "Distance to Ghost: " + userLocation.distanceTo(ghost.getLocation()));
-		if (userLocation.distanceTo(ghost.getLocation()) < 100) {
+		//Log.d("GameActivity", "Distance to Ghost: " + userLocation.distanceTo(ghost.getLocation()));
+		if (userLocation.distanceTo(ghost.getLocation()) < player.getAttackRadius()) {
 			Log.d(TAG, "Proximate");
 			Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
 			toast.show();
@@ -304,10 +386,13 @@ public class GameActivity extends Activity {
 		super.onResume();
 		if (setUpMapIfNeeded() && thread == null) {
 			thread = new GhostThread(this);
+			AsyncRunner = new Thread();
 		}
 
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
 	}
+
+
 }
 
 

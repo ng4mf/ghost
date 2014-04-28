@@ -33,6 +33,7 @@ public class Player {
 
 	private Item bomb;
 	private Item powerBomb;
+	
 	private Item plusHealth;
 	private Item invincibility;
 	private Item stealthy;
@@ -245,11 +246,8 @@ public class Player {
 	 */
 	public boolean inRange(Ghosts g) {
 		boolean retVal = false;
-		double ghostPosX = g.getXCoord();
-		double ghostPosY = g.getYCoord();
-		if (Math.pow((this.xCoord - ghostPosX), 2)
-				+ Math.pow((this.yCoord - ghostPosY), 2) <= Math.pow(
-				this.attackDistance, 2)) {
+		Location ghostLoc = g.getLocation();
+		if (location.distanceTo(ghostLoc) <= this.attackDistance) {
 			retVal = true;
 		}
 		return retVal;
