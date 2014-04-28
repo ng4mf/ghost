@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/TabHost01"
+android:layout_width="300dp"
+android:layout_height="300dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/Weapons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbars="vertical" >
+
+                <Button
+                    android:id="@+id/Bombs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    android:text="@string/bomb" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Items"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbars="vertical" >
+
+                <Button
+                    android:id="@+id/Potion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    android:text="@string/potion" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</TabHost>

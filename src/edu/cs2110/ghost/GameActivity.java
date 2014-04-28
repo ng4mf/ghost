@@ -57,6 +57,8 @@ public class GameActivity extends Activity {
 	
 	private Thread AsyncRunner;
 	
+	private boolean playerKilled = false;
+	
 	
 	
 	public ArrayList<Ghosts> getGhosts() {
@@ -246,6 +248,9 @@ public class GameActivity extends Activity {
 							if (g.getHealth() <= 0) {
 								/*thread.cancel(true);
 								while(!thread.isCancelled()) {}*/
+
+								Log.d("About to loot", "Looting Ghosts");
+								player.lootChance();
 								changeGhosts("remove", g);
 								break;
 //								thread.execute();
@@ -268,6 +273,7 @@ public class GameActivity extends Activity {
 		ghostMap.remove(g);
 		ghostLocationMap.remove(g);
 		ghosts.remove(g);
+		player.killGhost();
 	}
 	
 	private void updateScreen(ArrayList<Ghosts> g) {
@@ -284,32 +290,32 @@ public class GameActivity extends Activity {
 		
 		player.setLocation(userLocation);
 		
-		Log.d(TAG, "No trouble setting user location"); 
+//		Log.d(TAG, "No trouble setting user location"); 
 		
 		for (Ghosts ghost: ghosts) {
-			Log.d(TAG, "Can Call on list of ghosts");
+			//Log.d(TAG, "Can Call on list of ghosts");
 			if (!ghostMap.keySet().contains(ghost)) {
-				Log.d(TAG, "Can call dependent data structures");
+				//Log.d(TAG, "Can call dependent data structures");
 				MarkerOptions a = new MarkerOptions()
 					.position(new LatLng(ghost.getLocation().getLatitude(), ghost.getLocation().getLongitude()))
 					.title("Ghost")
 					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite));
 
-				Log.d(TAG, "Made markeroptions at: " + ghost.getLocation().getLatitude() + ", " + 
-						ghost.getLocation().getLongitude());
+//				Log.d(TAG, "Made markeroptions at: " + ghost.getLocation().getLatitude() + ", " + 
+//						ghost.getLocation().getLongitude());
 				
 				Marker m = mMap.addMarker(new MarkerOptions()
 					.position(new LatLng(0, 0))
 					.title("Ghost")
 					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ghost_sprite)));
 
-				Log.d(TAG, "made marker");
+//				Log.d(TAG, "made marker");
 //				mMap.addMarker(a);
 
-				Log.d(TAG, "added marker to map");
+//				Log.d(TAG, "added marker to map");
 				ghostMap.put(ghost, m);
 
-				Log.d(TAG, "put ghost and marker on map");
+//				Log.d(TAG, "put ghost and marker on map");
 				
 				Location tempLoc = new Location("Ghost"); 
 				
@@ -318,16 +324,16 @@ public class GameActivity extends Activity {
 				
 				
 				ghostLocationMap.put(ghost, tempLoc);
-				Log.d(TAG, "Can update dependent data structures");
+//				Log.d(TAG, "Can update dependent data structures");
 			}
 			else {				
-				Log.d(TAG, "Can start updating of existing ghosts");
+//				Log.d(TAG, "Can start updating of existing ghosts");
 				ghostMap.get(ghost).setPosition(new LatLng(ghost.getXCoord(), ghost.getYCoord()));
 				Location tempLoc = new Location("Ghost"); 
 				tempLoc.setLatitude(ghost.getXCoord());
 				tempLoc.setLongitude(ghost.getYCoord());
 				ghostLocationMap.put(ghost, tempLoc);
-				Log.d(TAG, "Completed ghost position update");
+//				Log.d(TAG, "Completed ghost position update");
 			}
 		}
 		
@@ -340,37 +346,67 @@ public class GameActivity extends Activity {
 	
 	public synchronized void changeGhosts(String command, Ghosts g) {
 		if (command.equals("add")) {
-			Log.d(TAG, "Almost there, adding ghost now");
+//			Log.d(TAG, "Almost there, adding ghost now");
 			ghosts.add(g);
-			Log.d(TAG, "Added ghost");
+//			Log.d(TAG, "Added ghost");
 		}
 		else if (command.equals("remove")) {
-			Log.d(TAG, "Started Ghost removal process");
+//			Log.d(TAG, "Started Ghost removal process");
 			remove(g);
-			Log.d(TAG, "Completed Ghost Removal");
+//			Log.d(TAG, "Completed Ghost Removal");
 		}
 		else if (command.equals("update")) {
-			Log.d(TAG, "Updating");
+//			Log.d(TAG, "Updating");
 			for (Ghosts ghost: ghosts)
 				thread.determineMovement(ghost);
-			Log.d(TAG, "Completed update");
+//			Log.d(TAG, "Completed update");
 		}
 		else if (command.equals("updateAll")) {
-			Log.d(TAG, command);
+//			Log.d(TAG, command);
 			updateScreen(ghosts);
-			Log.d(TAG, command + " complete");
+//			Log.d(TAG, command + " complete");
+		}
+		else if (command.equals("attack")) {
+			if (playerKilled)
+				Log.d(TAG, "Something is calling this again");
+			for (Ghosts ghost: ghosts) {
+				if (ghost.attackPlayer(player)) {
+					Log.d(TAG, "Ghost damaged player");
+					if (player.getHealth() == 0) {
+						Log.d(TAG, "Player killed");
+						playerKilled = true;
+						break;
+					}
+					if (playerKilled)
+						break;
+				}
+				if (playerKilled)
+					break;
+			}
+		}
+		if (playerKilled) {
+			thread.setCanceled(true);
+			thread.cancel(true);
+			endGame();
 		}
 	}
 	
 	private void proximityCheck(Ghosts ghost) {
 		//Log.d("GameActivity", "Distance to Ghost: " + userLocation.distanceTo(ghost.getLocation()));
 		if (userLocation.distanceTo(ghost.getLocation()) < player.getAttackRadius()) {
-			Log.d(TAG, "Proximate");
+//			Log.d(TAG, "Proximate");
 			Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
 			toast.show();
 		}
 	}
 
+	private void endGame() {
+		Intent i = new Intent(this, EndActivity.class);
+		Bundle bundle = new Bundle();
+		bundle.putInt("KillScore", player.getScore());
+		startActivity(i);
+	}
+	
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -386,7 +422,7 @@ public class GameActivity extends Activity {
 		super.onResume();
 		if (setUpMapIfNeeded() && thread == null) {
 			thread = new GhostThread(this);
-			AsyncRunner = new Thread();
+			//AsyncRunner = new Thread();
 		}
 
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));

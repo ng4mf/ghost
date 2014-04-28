@@ -6,8 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.location.Location;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.util.Log;
 import edu.cs2110.itemsAndAbilities.Bomb;
 import edu.cs2110.itemsAndAbilities.Invincibility;
 import edu.cs2110.itemsAndAbilities.Item;
@@ -28,6 +27,8 @@ public class Player {
 	private Location location;
 	private boolean stealthEffect;
 	private boolean invincibilityEffect;
+
+	private int killCount;
 	
 	private double id;
 
@@ -84,6 +85,8 @@ public class Player {
 		this.invincibilityCost = 15;
 		this.healthCost = 15;
 		this.stealthCost = 25;
+		
+		this.killCount = 0;
 	}
 
 	/**
@@ -196,6 +199,14 @@ public class Player {
 
 	public double getId() {
 		return id;
+	}
+	
+	public void killGhost() {
+		killCount++;
+	}
+	
+	public int getScore() {
+		return killCount;
 	}
 	
 	/**
@@ -463,24 +474,33 @@ public class Player {
 	}
 
 	public void lootChance() {
+		
 		Random generator = new Random();
-		int g = generator.nextInt(5);
+		int g = generator.nextInt(6);
+		Log.d("Loot chance", "" + g);
 		if (g == 5) {
+			Log.d("Loot", "Got Power Bomb");
 			this.gainCurrency(600);
 			this.addItem("Power Bomb", 1);
 		}
 		if (g >= 4) {
+			Log.d("Loot", "Got Bomb");
 			this.gainCurrency(100);
 			this.addItem("Bomb", 2);
 		}
 		if (g >= 3) {
+			Log.d("Loot", "Got $$");
 			this.gainCurrency(100);
 			this.addItem("Bomb", 1);
 		}
 		if (g >= 2) {
+
+			Log.d("Loot", "Got $");
 			this.gainCurrency(100);
 		}
 		if (g >= 1) {
+
+			Log.d("Loot", "Got $");
 			this.gainCurrency(100);
 		}
 

@@ -42,7 +42,7 @@ public class Ghosts {
 		
 		health = 10;
 		power = 3;
-		attackDistance = 0.000074917; //calculated from using google coordinate system. 1/4 the width of olson hall.
+		attackDistance = 200; //calculated from using google coordinate system. 1/4 the width of olson hall.
 		speed = .0001;
 		
 		//Some ghosts will move quickly, others will barely move at all.
@@ -58,7 +58,7 @@ public class Ghosts {
 		
 		health = 10;
 		power = 3;
-		attackDistance = 0.000074917;
+		attackDistance = 200;
 		speed = .0001;
 		
 		//Some ghosts will move quickly, others will barely move at all.
@@ -183,11 +183,7 @@ public class Ghosts {
 	 */
 	public boolean inRange(Player p) {
 		boolean retVal = false;
-		double playerPosX = p.getXCoord();
-		double playerPosY = p.getYCoord();
-		if (Math.pow((this.xCoord - playerPosX), 2)
-				+ Math.pow((this.yCoord - playerPosY), 2) <= Math.pow(
-				this.attackDistance, 2)) {
+		if (this.loc.distanceTo(p.getLocation()) < attackDistance) {
 			retVal = true;
 		}
 		return retVal;

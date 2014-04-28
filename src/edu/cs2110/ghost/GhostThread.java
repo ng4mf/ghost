@@ -56,7 +56,7 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 		while (true) {
 			if (run) {
 				//ghosts = master.getGhosts();
-				Log.d(TAG, "Did not die yet");
+				//Log.d(TAG, "Did not die yet");
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
@@ -70,10 +70,10 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 				//}
 				time += 1;
 				addGhost();
-				Log.d("Thread", "Ghost in list");
+				ghostAttack();
+//				Log.d("Thread", "Ghost in list");
 				
 				//ghosts = master.getGhosts();
-
 				publishProgress((ArrayList<Ghosts>)(master.getGhosts()));
 				} catch (ConcurrentModificationException c) {
 					Log.d(TAG, c.getMessage().toString());
@@ -87,11 +87,15 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 		return null;
 	}
 	
+	public void ghostAttack() {
+		master.changeGhosts("attack", null);
+	}
+	
 	public void addGhost() {
 		//Log.d(TAG, "Dif: " + (System.currentTimeMillis()-time));
 		if (time > 5) {
 			time = 0;
-			Log.d(TAG, "Almost added");
+//			Log.d(TAG, "Almost added");
 			master.changeGhosts("add", new Ghosts(38.036550, -78.507310));
 			//ghosts.add(new Ghosts(38.036550, -78.507310));
 			//Log.d(TAG, "Added Ghost");

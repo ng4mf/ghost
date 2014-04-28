@@ -25,5 +25,6 @@
     <string name="stealth">Stealth Potion</string>
     <string name="stealth_cost">$25</string>
     <string name="buy">Buy</string>
+    <string name="final_score">Final Score: </string>
     
 </resources>
