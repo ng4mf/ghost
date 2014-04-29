@@ -40,7 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements SensorEventListener{
 	private static final String TAG = "GameActivity";
 	
 	private GoogleMap mMap;
@@ -61,12 +61,12 @@ public class GameActivity extends Activity {
 	
 	private LocationManager manager;
 	private LocationListener listen;
-	/*
+	
 	private SensorManager sensorManager;
 	private Sensor accelerometer;
 	private long lastUpdate = 0;
 	private float last_x = 0;
-	private float last_y = 0;*/
+	private float last_y = 0;
 	
 	private boolean playerKilled = false;
 	
@@ -190,10 +190,10 @@ public class GameActivity extends Activity {
 		
 		player.setLocation(userLocation);
 		
-	/*	sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-		*/
+		
 		//Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
 		if (userMarker == null) {
 			userMarkerOptions = new MarkerOptions()
@@ -201,7 +201,7 @@ public class GameActivity extends Activity {
 				.title("Ghost")
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.user));
 			userMarker = mMap.addMarker(userMarkerOptions);
-			mMap.addMarker(userMarkerOptions);
+			//mMap.addMarker(userMarkerOptions);
 		}
 	}
 
@@ -327,7 +327,7 @@ public class GameActivity extends Activity {
 	private void updateScreen(ArrayList<Ghosts> g) {
 		//ghosts = g;
 		
-		Criteria c = new Criteria();
+		/*Criteria c = new Criteria();
 		c.setHorizontalAccuracy(3);
 		String bestProvider = manager.getBestProvider(c, true);
 		userLocation = manager.getLastKnownLocation(bestProvider);
@@ -336,7 +336,7 @@ public class GameActivity extends Activity {
 			userLocation = manager.getLastKnownLocation(bestProvider);
 		}
 		
-		player.setLocation(userLocation);
+		player.setLocation(userLocation);*/
 		
 //		Log.d(TAG, "No trouble setting user location"); 
 		
@@ -514,7 +514,7 @@ public class GameActivity extends Activity {
 	    //sensorManager.unregisterListener(this);
 	}
 
-	/*@Override
+	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
 		
@@ -534,17 +534,21 @@ public class GameActivity extends Activity {
 	            long diffTime = (curTime - lastUpdate);
 	            lastUpdate = curTime;
 	            
-	            float xchange = Math.abs(x - last_x)/ diffTime / 100;
-	            float ychange = Math.abs(y - last_y)/ diffTime / 100;
+	            float xchange = -x/ diffTime / 100;
+	            float ychange = -y/ diffTime / 100;
 	            
-	            player.getLocation().setLatitude(player.getLocation().getLatitude() + xchange);
-	            player.getLocation().setLongitude(player.getLocation().getLongitude() + ychange);
-	            
+	            player.getLocation().setLatitude(player.getLocation().getLatitude() + ychange);
+	            player.getLocation().setLongitude(player.getLocation().getLongitude() + xchange);
+	            userLocation.setLatitude(player.getLocation().getLatitude());
+	            userLocation.setLongitude(player.getLocation().getLongitude());
+	            userMarker.setPosition(new LatLng(
+	            		player.getLocation().getLatitude(),
+	            		player.getLocation().getLongitude()));
 	            last_x = x;
 	            last_y = y;
 	        }
-		}*/
-	//}
+		}
+	}
 
 
 }

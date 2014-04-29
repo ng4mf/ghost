@@ -52,7 +52,8 @@
 
        <activity 
            android:name="edu.cs2110.ghost.GameActivity"
-           android:label="@string/app_name">
+           android:label="@string/app_name"
+           android:screenOrientation="portrait">
        </activity>
     </application>
 
