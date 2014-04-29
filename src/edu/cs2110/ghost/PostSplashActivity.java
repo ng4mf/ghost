@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.app.Fragment;
 
 public class PostSplashActivity extends Activity {
-
+	
+	private int difficulty;
+	static MenuFragment firstFragment;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,7 +27,7 @@ public class PostSplashActivity extends Activity {
             }
 
             // Create a new Fragment to be placed in the activity layout
-            MenuFragment firstFragment = new MenuFragment();
+            firstFragment = MenuFragment.newInstance();
             
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
@@ -34,6 +37,14 @@ public class PostSplashActivity extends Activity {
             getFragmentManager().beginTransaction()
                     .add(R.id.fragmentContainer, firstFragment).commit();
         }
+	}
+	
+	public int getDifficulty() {
+		return difficulty;
+	}
+	
+	public void setDifficulty (int g) {
+		difficulty = g;
 	}
 	
 	@Override

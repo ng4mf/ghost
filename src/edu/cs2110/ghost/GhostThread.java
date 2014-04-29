@@ -15,6 +15,7 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	private boolean cancel = false;
 	private static final String TAG = "GhostThread";
 	private int time = 0;
+	private int difficulty;
 	
 	private boolean removed = false;
 	
@@ -25,15 +26,20 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 		setRunning(true);
 	}
 
-	public GhostThread(GameActivity g){
+	public GhostThread(GameActivity g, int diff){
 		//Log.d("GhostThread", "Initiating GhostThread");
 		Log.d(TAG, "Started making thread");
 		master = g;
+		difficulty = 15 - diff;
 		//ghosts = Collections.synchronizedCollection(master.getGhosts());
 		setRunning(true);
 		//Log.d("GhostThread", "GhostThread Initiated");
 	}
 	 
+	public boolean isRunning() {
+		return run;
+	}
+	
 	public void setRunning(boolean value) {
 		run = value;
 	}
@@ -93,15 +99,16 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 	
 	public void addGhost() {
 		//Log.d(TAG, "Dif: " + (System.currentTimeMillis()-time));
-		if (time > 5) {
+		if (time > difficulty) {
 			time = 0;
 //			Log.d(TAG, "Almost added");
-			int neg1 = (int)(Math.random()*(-2));
-			double variation1 = (Math.random()*(-2));
+			int neg1 = (int)(Math.random()*(2));
+			if (neg1 == 0)
+				neg1 = -1;
 			master.changeGhosts("add", 
 					new Ghosts(
-							master.getPlayer().getLocation().getLatitude() + 0.001, 
-							-78.507310));
+							master.getPlayer().getLocation().getLatitude() + neg1 * Math.random() * 0.025, 
+							master.getPlayer().getLocation().getLongitude() + neg1 * Math.random() * 0.025));
 			//ghosts.add(new Ghosts(38.036550, -78.507310));
 			//Log.d(TAG, "Added Ghost");
 		}

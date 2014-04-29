@@ -15,10 +15,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 public class ChoosePlayerFragment extends Fragment {
+	
+	private static ChoosePlayerFragment c;
 	private Button healthButton;
 	private Button strengthButton;
 	private Button reachButton;
 	private Bundle b;
+	private static int difficulty;
 	private static final String TAG = "ChoosePlayerFragment";
 
 	@Override
@@ -28,6 +31,12 @@ public class ChoosePlayerFragment extends Fragment {
 		Log.d(TAG, "Choose Your Player Ability");
 	}
 
+	public static ChoosePlayerFragment newInstance(int diff) {
+		difficulty = diff;
+		c = new ChoosePlayerFragment();
+		return c;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent,
 			Bundle savedInstanceState) {
@@ -47,6 +56,7 @@ public class ChoosePlayerFragment extends Fragment {
 				b.putInt("power", 1);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
+				b.putInt("level", difficulty);
 				i.putExtras(b);
 				startActivity(i);
 			}
@@ -70,7 +80,7 @@ public class ChoosePlayerFragment extends Fragment {
 				b.putInt("power", 2);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
-				
+				b.putInt("level", difficulty);
 				Log.d(TAG, "Made extras for bundle");
 				i.putExtras(b);
 				Log.d(TAG, "Registered extras");
@@ -93,6 +103,7 @@ public class ChoosePlayerFragment extends Fragment {
 				b.putInt("power", 1);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
+				b.putInt("level", difficulty);
 				i.putExtras(b);
 				startActivity(i);
 			}

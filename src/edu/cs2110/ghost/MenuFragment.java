@@ -14,11 +14,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 public class MenuFragment extends Fragment {
+	
+	private static MenuFragment menu;
 	private Button mapButton;
 	private Button newGameButton;
 	private Button difficultyAdjustor;
 	private Button highScoresButton;
 	private Button continuePausedGameButton;
+	private int level;
 	private static final String TAG = "MenuFragment";
 	
 	@Override
@@ -26,6 +29,12 @@ public class MenuFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.app_name);
 		Log.d(TAG, "Made Menu");
+		level = 5;
+	}
+	
+	public static MenuFragment newInstance() {
+		menu = new MenuFragment();
+		return menu;
 	}
 	
 	@Override
@@ -39,7 +48,8 @@ public class MenuFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "New Game Button Registered");
-				Fragment cp = new ChoosePlayerFragment();
+				ChoosePlayerFragment cp = ChoosePlayerFragment.newInstance(level);
+				
 	            getFragmentManager().beginTransaction()
 	                    .add(R.id.fragmentContainer, cp).commit();
 			}
@@ -59,7 +69,10 @@ public class MenuFragment extends Fragment {
 		difficultyAdjustor.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-	            //Open dialog to adjust difficulty
+	            DifficultyDialog d = new DifficultyDialog();
+	            d.setTargetFragment(menu, 5);
+	            FragmentManager g = getActivity().getFragmentManager();
+	            d.show(g, "Difficulty Adjustor");
 			}
 		});
 		
@@ -78,6 +91,12 @@ public class MenuFragment extends Fragment {
 		return v;
 	}
 	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    if (requestCode == 5){ //make sure fragment codes match up {
+	        Bundle b = data.getExtras();
+	        level = b.getInt("Level");
+	    }
+	}
 	@Override
 	public void onResume() {
 		super.onResume();

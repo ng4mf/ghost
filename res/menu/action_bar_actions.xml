@@ -13,4 +13,8 @@
         android:id="@+id/inventory"
         android:icon="@drawable/inventory"
         android:showAsAction="always" />
+    <item
+        android:id="@+id/store"
+        android:icon="@drawable/store"
+        android:showAsAction="always" />
 </menu>

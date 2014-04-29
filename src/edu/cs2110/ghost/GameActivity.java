@@ -51,6 +51,8 @@ public class GameActivity extends Activity implements SensorEventListener{
 	private Map<Ghosts, Marker> ghostMap = new HashMap<Ghosts, Marker>();
 	private Map<Ghosts, Location> ghostLocationMap = new HashMap<Ghosts, Location>();
 	private GhostThread thread;
+	private int level;
+	
 	private Player player;
 	private String currentWeapon;
 	private boolean ghostNear;
@@ -99,7 +101,7 @@ public class GameActivity extends Activity implements SensorEventListener{
 		mp = MediaPlayer.create(getApplicationContext(), R.raw.ghost_music);
 		mp.setLooping(true);
 		mp.start();
-		
+		level = stats.getInt("level");
 		danger = MediaPlayer.create(getApplicationContext(), R.raw.ghost_danger);
 		danger.setLooping(true);
 		
@@ -230,6 +232,11 @@ public class GameActivity extends Activity implements SensorEventListener{
 				FragmentManager fm = getFragmentManager();
 				inventory.show(fm, "Inventory");
 				return true;
+			case R.id.store:
+				DialogFragment hs = StoreDialog.newInstance(thread, player);
+				FragmentManager m = getFragmentManager();
+				hs.show(m, "Store");
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -260,19 +267,19 @@ public class GameActivity extends Activity implements SensorEventListener{
 		// 38.036558, -78.507319
 		// UVA Bookstore Coordinates
 		//Log.d(TAG, "Setting Store Up");
-		mMap.addMarker(new MarkerOptions()
+		/*mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(38.036558, -78.507319))
-				.title("Store"));
+				.title("Store"));*/
 		mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 			@Override
 			public boolean onMarkerClick(Marker m) {
 				//Log.d("Store Marker", "Registered Marker Click");
-				if (m.getTitle().equals("Store")) {
+				/*if (m.getTitle().equals("Store")) {
 					DialogFragment hs = StoreDialog.newInstance(thread, player);
 					FragmentManager fm = getFragmentManager();
 					hs.show(fm, "Store");
-				}
-				else if (m.getTitle().equals("Ghost")) {
+				}*/
+				if (m.getTitle().equals("Ghost")) {
 					//Log.d(TAG, "Ghost click registered");
 					currentWeapon = player.getWeapon();
 					if (currentWeapon.equals("power")) {
@@ -435,19 +442,21 @@ public class GameActivity extends Activity implements SensorEventListener{
 		else if (command.equals("attack")) {
 			if (playerKilled)
 				Log.d(TAG, "Something is calling this again");
-			for (Ghosts ghost: ghosts) {
-				if (ghost.attackPlayer(player)) {
-					Log.d(TAG, "Ghost damaged player");
-					if (player.getHealth() == 0) {
-						Log.d(TAG, "Player killed");
-						playerKilled = true;
-						break;
+			if (thread.isRunning()) {
+				for (Ghosts ghost: ghosts) {
+					if (ghost.attackPlayer(player)) {
+						Log.d(TAG, "Ghost damaged player");
+						if (player.getHealth() == 0) {
+							Log.d(TAG, "Player killed");
+							playerKilled = true;
+							break;
+						}
+						if (playerKilled)
+							break;
 					}
 					if (playerKilled)
 						break;
 				}
-				if (playerKilled)
-					break;
 			}
 		}
 		else if (command.equals("killall")) {
@@ -490,7 +499,7 @@ public class GameActivity extends Activity implements SensorEventListener{
 	public void onStart() {
 		super.onStart();
 		if (setUpMapIfNeeded() && thread == null) {
-			thread = new GhostThread(this);
+			thread = new GhostThread(this, level);
 			thread.execute();
 			
 		}
@@ -500,7 +509,7 @@ public class GameActivity extends Activity implements SensorEventListener{
 	public void onResume() {
 		super.onResume();
 		if (setUpMapIfNeeded() && thread == null) {
-			thread = new GhostThread(this);
+			thread = new GhostThread(this, level);
 			//AsyncRunner = new Thread();
 		}
 
