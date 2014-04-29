@@ -196,7 +196,8 @@ public class Ghosts {
 		boolean retVal = false;
 		boolean reach = this.inRange(p);
 		if (p.isInvincibilityEffect() == false && reach == true) {
-			p.damaged(this, 1);
+			int a = (int) (Math.random() * 1.5);
+			p.damaged(this, a);
 			retVal = true;
 		}
 		return retVal;

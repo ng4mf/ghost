@@ -36,15 +36,15 @@ public class PowerBombs implements Item {
 	@Override
 	public void useItem(Player p, Ghosts g) {
 		// if power bomb is too close to player, intended to hurt player as well
-		boolean willPlayerGetHurt = p.inPowerBombRange(g);
-		if (willPlayerGetHurt == true && p.getHealth() > 0
+		/*boolean willPlayerGetHurt = p.inPowerBombRange(g);
+		if (willPlayerGetHurt == false && p.getHealth() > 0
 				&& p.isInvincibilityEffect() == false) {
 			p.damaged(p, 5);
-		}
-		g.damaged(p, 5);
+		}*/
+		g.setHealth(0);
 		this.decreaseCount(1);
 		if (g.getHealth() == 0) {
-			p.lootChance();
+			//p.lootChance();
 		}
 	}
 

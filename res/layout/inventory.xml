@@ -1,58 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost
+
+ <LinearLayout 
 xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/TabHost01"
-android:layout_width="300dp"
-android:layout_height="300dp">
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+     <TextView
+         android:id="@+id/money_display"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content" />
+     <LinearLayout 
+     android:layout_width="match_parent" 
+     android:layout_height="wrap_content" 
+     android:orientation="horizontal">
 
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+      <TextView 
+          android:layout_width="0dp" 
+          android:layout_height="wrap_content" 
+          android:layout_weight="1" 
+          android:text="@string/bomb" />
 
-        <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+      <TextView 
+          android:id="@+id/bomb_count" 
+          android:layout_width="0dp" 
+          android:layout_height="wrap_content" 
+          android:layout_weight="1" 
+          android:text="TextView" />
 
-            <LinearLayout
-                android:id="@+id/Weapons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbars="vertical" >
+      <Button 
+          android:id="@+id/bomb_select" 
+          android:layout_width="0dp" 
+          android:layout_height="wrap_content" 
+          android:layout_weight="1" 
+          android:text="@string/set_current_weapon" />
+      </LinearLayout>
+      
+      <LinearLayout 
+          android:layout_width="match_parent" 
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/Bombs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="10dp"
-                    android:text="@string/bomb" />
-            </LinearLayout>
+          <TextView 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="@string/power_bomb" />
 
-            <LinearLayout
-                android:id="@+id/Items"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbars="vertical" >
+          <TextView 
+              android:id="@+id/power_bomb_count" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="TextView" />
 
-                <Button
-                    android:id="@+id/Potion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="10dp"
-                    android:text="@string/potion" />
-            </LinearLayout>
-        </FrameLayout>
-    </LinearLayout>
+          <Button 
+              android:id="@+id/power_bomb_select" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="@string/set_current_weapon" />
+      </LinearLayout>
+      
+      <LinearLayout 
+          android:layout_width="match_parent" 
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
 
-</TabHost>
+          <TextView 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="@string/health" />
+
+          <TextView 
+              android:id="@+id/health_potion_count" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="TextView" />
+
+          <Button 
+              android:id="@+id/use_health_potion" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="@string/use_item" />
+      </LinearLayout>
+      
+      <LinearLayout 
+          android:layout_width="match_parent" 
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+          <TextView 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="@string/invincibility" />
+
+          <TextView 
+              android:id="@+id/invincibility_count" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" />
+
+          <Button 
+              android:id="@+id/use_invincibility" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="@string/use_item" />
+      </LinearLayout>
+      
+      <LinearLayout 
+          android:layout_width="match_parent" 
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+          <TextView 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:text="@string/stealth" 
+              android:layout_weight="1"/>
+
+          <TextView 
+              android:id="@+id/stealth_count" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" />
+
+          <Button 
+              android:id="@+id/use_stealth" 
+              android:layout_width="0dp" 
+              android:layout_height="wrap_content" 
+              android:layout_weight="1" 
+              android:text="@string/use_item" />
+      </LinearLayout>
+
+      <Button
+          android:id="@+id/exit_inventory"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/okay" />
+
+ </LinearLayout>

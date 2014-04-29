@@ -26,5 +26,12 @@
     <string name="stealth_cost">$25</string>
     <string name="buy">Buy</string>
     <string name="final_score">Final Score: </string>
+    <string name="resume">Resume</string>
+    <string name="quit">Quit</string>
+    <string name="options">Options</string>
+    <string name="dialog_pause">Paused</string>
+    <string name="potion">Potion</string>
+    <string name="set_current_weapon">Set Weapon</string>
+    <string name="use_item">Use Item</string>
     
 </resources>

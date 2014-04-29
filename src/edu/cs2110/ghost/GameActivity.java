@@ -9,12 +9,15 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements SensorEventListener {
 	private static final String TAG = "GameActivity";
 	
 	private GoogleMap mMap;
@@ -47,6 +50,8 @@ public class GameActivity extends Activity {
 	private Map<Ghosts, Location> ghostLocationMap = new HashMap<Ghosts, Location>();
 	private GhostThread thread;
 	private Player player;
+	private String currentWeapon;
+	private boolean ghostNear;
 	
 	private Marker userMarker;
 	private MarkerOptions userMarkerOptions;
@@ -59,6 +64,8 @@ public class GameActivity extends Activity {
 	
 	private boolean playerKilled = false;
 	
+	private MediaPlayer mp;
+	private MediaPlayer danger;
 	
 	
 	public ArrayList<Ghosts> getGhosts() {
@@ -78,6 +85,14 @@ public class GameActivity extends Activity {
 		//player = (Player)i.getSerializableExtra("player");
 		Bundle stats = i.getExtras();
 
+		mp = MediaPlayer.create(getApplicationContext(), R.raw.ghost_music);
+		mp.setLooping(true);
+		mp.start();
+		
+		danger = MediaPlayer.create(getApplicationContext(), R.raw.ghost_danger);
+		danger.setLooping(true);
+		
+		ghostNear = false;
 		ghosts = new ArrayList<Ghosts>();
 		//Player(String name, int maxHealth, int power, double currency,
 		//double attackDistance)
@@ -191,6 +206,11 @@ public class GameActivity extends Activity {
 			case R.id.play_game:
 				if (thread != null)
 					thread.setRunning(true);
+			case R.id.inventory:
+				thread.setRunning(false);
+				InventoryDialog inventory = InventoryDialog.newInstance(player, thread);
+				FragmentManager fm = getFragmentManager();
+				inventory.show(fm, "Inventory");
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -235,25 +255,34 @@ public class GameActivity extends Activity {
 				}
 				else if (m.getTitle().equals("Ghost")) {
 					//Log.d(TAG, "Ghost click registered");
+					currentWeapon = player.getWeapon();
+					if (currentWeapon.equals("power")) {
+						changeGhosts("killall", null);
+						player.setWeapon("default");
+					}
+					
 					for (Ghosts g: ghostMap.keySet()) {
 						if (player.inRange(g)) {
-							//Log.d(TAG, "Found ghost marker map");
-							/*Toast toast = Toast.makeText(getApplicationContext(), "" + g.getHealth(), Toast.LENGTH_SHORT);
-							toast.show();
+							if (currentWeapon.equals("default") && ghostMap.get(g).equals(m)) {
+								player.attackGhost(g);
+							}
+							else if (currentWeapon.equals("bomb")) {
+								player.useBomb(g);
+								player.setWeapon("default");
+							}
 							
-							toast = Toast.makeText(getApplicationContext(), "" + g.getHealth(), Toast.LENGTH_SHORT);
-							toast.show();*/
-							player.useBomb(g);
-							Log.d(TAG, "Ghost Health: " + g.getHealth());
-							if (g.getHealth() <= 0) {
-								/*thread.cancel(true);
-								while(!thread.isCancelled()) {}*/
-
-								Log.d("About to loot", "Looting Ghosts");
-								player.lootChance();
-								changeGhosts("remove", g);
-								break;
-//								thread.execute();
+							if (!currentWeapon.equals("power")) {
+								Log.d(TAG, "Ghost Health: " + g.getHealth());
+								if (g.getHealth() <= 0) {
+									/*thread.cancel(true);
+									while(!thread.isCancelled()) {}*/
+	
+									Log.d("About to loot", "Looting Ghosts");
+									player.lootChance();
+									changeGhosts("remove", g);
+									break;
+	//								thread.execute();
+								}
 							}
 						}
 					}
@@ -336,11 +365,26 @@ public class GameActivity extends Activity {
 //				Log.d(TAG, "Completed ghost position update");
 			}
 		}
-		
+		boolean doubleCheck = false;
 		for (Ghosts ghost: ghosts) {
-			proximityCheck(ghost);
-			/*Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
-			toast.show();*/
+			if (proximityCheck(ghost)) {
+				ghostNear = true;
+				doubleCheck = true;
+			}
+		}
+		if (!doubleCheck && ghostNear) {
+			ghostNear = false;
+			if (danger.isPlaying())
+				danger.pause();
+			if (!mp.isPlaying())
+				mp.start();
+		}
+		else if (doubleCheck && ghostNear) {
+			mp.pause();
+			if (mp.isPlaying())
+				mp.pause();
+			if (!danger.isPlaying())
+				danger.start();
 		}
 	}
 	
@@ -384,6 +428,15 @@ public class GameActivity extends Activity {
 					break;
 			}
 		}
+		else if (command.equals("killall")) {
+			for (Ghosts ghost: ghosts) {
+				ghostMap.get(ghost).remove();
+				ghostMap.remove(ghost);
+				ghostLocationMap.remove(ghost);
+				player.killGhost();
+			}
+			ghosts = new ArrayList<Ghosts>();
+		}
 		if (playerKilled) {
 			thread.setCanceled(true);
 			thread.cancel(true);
@@ -391,13 +444,15 @@ public class GameActivity extends Activity {
 		}
 	}
 	
-	private void proximityCheck(Ghosts ghost) {
+	private boolean proximityCheck(Ghosts ghost) {
 		//Log.d("GameActivity", "Distance to Ghost: " + userLocation.distanceTo(ghost.getLocation()));
 		if (userLocation.distanceTo(ghost.getLocation()) < player.getAttackRadius()) {
 //			Log.d(TAG, "Proximate");
 			Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
 			toast.show();
+			return true;
 		}
+		return false;
 	}
 
 	private void endGame() {
@@ -426,6 +481,18 @@ public class GameActivity extends Activity {
 		}
 
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

@@ -53,6 +53,8 @@ public class Player {
 	private int invincibilityCost;
 	private int stealthCost;
 	private int healthCost;
+	
+	private String weapon = "default";
 
 	/**
 	 * Constructors for Player
@@ -93,6 +95,14 @@ public class Player {
 	 * Getters and Setters
 	 */
 
+	public void setWeapon(String w) {
+		weapon = w;
+	}
+	
+	public String getWeapon() {
+		return weapon;
+	}
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -334,9 +344,9 @@ public class Player {
 	 */
 	public boolean usePowerBomb(Ghosts g) {
 		boolean retVal = false;
-		boolean reach = this.inRange(g);
+		boolean reach = true;
 		if (this.powerBomb.getCount() >= 1 && reach == true) {
-			this.powerBomb.useItem(this, g);
+			this.powerBomb.useItem(this, new Ghosts(0,0));
 			retVal = true;
 		}
 		return retVal;
@@ -504,5 +514,25 @@ public class Player {
 			this.gainCurrency(100);
 		}
 
+	}
+
+	public int getBombCount() {
+		return bomb.getCount();
+	}
+
+	public int getPowerBombCount() {
+		return powerBomb.getCount();
+	}
+
+	public int getInvincibilityCount() {
+		return invincibility.getCount();
+	}
+
+	public int getHealthPotionCount() {
+		return plusHealth.getCount();
+	}
+
+	public int getStealthCount() {
+		return stealthy.getCount();
 	}
 }

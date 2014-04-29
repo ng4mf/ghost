@@ -43,7 +43,7 @@ public class ChoosePlayerFragment extends Fragment {
 				Intent i = new Intent(getActivity(), GameActivity.class);// modify
 				b = new Bundle();
 				b.putString("name", "Health");
-				b.putInt("maxHealth", 20);
+				b.putInt("maxHealth", 200);
 				b.putInt("power", 1);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
@@ -63,7 +63,7 @@ public class ChoosePlayerFragment extends Fragment {
 
 				b = new Bundle();
 				b.putString("name", "Health");
-				b.putInt("maxHealth", 10);
+				b.putInt("maxHealth", 100);
 				b.putInt("power", 2);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
@@ -82,7 +82,7 @@ public class ChoosePlayerFragment extends Fragment {
 
 				b = new Bundle();
 				b.putString("name", "Health");
-				b.putInt("maxHealth", 10);
+				b.putInt("maxHealth", 100);
 				b.putInt("power", 1);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
