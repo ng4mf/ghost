@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/black"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
     
 
@@ -15,15 +15,15 @@
 
     <Button
         android:id="@+id/start_new_game"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/buttonshape"
         android:text="@string/new_game"
         android:textColor="#FFFFFF"
         android:textSize="32sp" />
 
-    <Button
+    <!-- <Button
         android:id="@+id/continue_paused_game"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         android:background="@drawable/buttonshape"
         android:text="Continue Game"
         android:textColor="#FFFFFF"
-        android:textSize="32sp" />
+        android:textSize="32sp" /> -->
 
     <Button
         android:id="@+id/difficulty_adjustor"

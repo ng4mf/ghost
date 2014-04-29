@@ -43,7 +43,7 @@ public class MenuFragment extends Fragment {
 	            getFragmentManager().beginTransaction()
 	                    .add(R.id.fragmentContainer, cp).commit();
 			}
-		});
+		});/*
 		
 		continuePausedGameButton = (Button)v.findViewById(R.id.continue_paused_game);
 		continuePausedGameButton.setText("Continue*");
@@ -52,7 +52,7 @@ public class MenuFragment extends Fragment {
 			public void onClick(View v) {
 	            //Open paused game
 			}
-		});
+		});*/
 		
 		difficultyAdjustor = (Button)v.findViewById(R.id.difficulty_adjustor);
 		difficultyAdjustor.setText("Adjust Difficulty");

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -38,7 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import edu.cs2110.actors.Ghosts;
 import edu.cs2110.actors.Player;
 
-public class GameActivity extends Activity implements SensorEventListener {
+public class GameActivity extends Activity {
 	private static final String TAG = "GameActivity";
 	
 	private GoogleMap mMap;
@@ -59,14 +61,23 @@ public class GameActivity extends Activity implements SensorEventListener {
 	
 	private LocationManager manager;
 	private LocationListener listen;
-	
-	private Thread AsyncRunner;
+	/*
+	private SensorManager sensorManager;
+	private Sensor accelerometer;
+	private long lastUpdate = 0;
+	private float last_x = 0;
+	private float last_y = 0;*/
 	
 	private boolean playerKilled = false;
 	
 	private MediaPlayer mp;
 	private MediaPlayer danger;
 	
+	private Toast toast;
+	
+	public Player getPlayer() {
+		return player;
+	}
 	
 	public ArrayList<Ghosts> getGhosts() {
 		return ghosts;
@@ -76,15 +87,15 @@ public class GameActivity extends Activity implements SensorEventListener {
 		ghosts = g;
 	}
 	
+	@SuppressLint("ShowToast")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_activity_fragment);
-		//Log.d(TAG, "Made GameActivity");
 		Intent i = getIntent();
 		//player = (Player)i.getSerializableExtra("player");
 		Bundle stats = i.getExtras();
-
+		Log.d(TAG, "Got here");
 		mp = MediaPlayer.create(getApplicationContext(), R.raw.ghost_music);
 		mp.setLooping(true);
 		mp.start();
@@ -110,6 +121,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 			Log.d(TAG, "maps not installed?");
 		}
 		
+		toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.gameContainer) != null) {
@@ -178,6 +190,10 @@ public class GameActivity extends Activity implements SensorEventListener {
 		
 		player.setLocation(userLocation);
 		
+	/*	sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		*/
 		//Log.d("UserLoc Setup", "Last Loc: " + userLocation.getLatitude() + ", " + userLocation.getLongitude());
 		if (userMarker == null) {
 			userMarkerOptions = new MarkerOptions()
@@ -204,13 +220,16 @@ public class GameActivity extends Activity implements SensorEventListener {
 					thread.setRunning(false);
 				return true;
 			case R.id.play_game:
+				Log.d(TAG, "Something is not screwing up");
 				if (thread != null)
 					thread.setRunning(true);
+				return true;
 			case R.id.inventory:
 				thread.setRunning(false);
 				InventoryDialog inventory = InventoryDialog.newInstance(player, thread);
 				FragmentManager fm = getFragmentManager();
 				inventory.show(fm, "Inventory");
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -370,9 +389,11 @@ public class GameActivity extends Activity implements SensorEventListener {
 			if (proximityCheck(ghost)) {
 				ghostNear = true;
 				doubleCheck = true;
+				toast.show();
 			}
 		}
 		if (!doubleCheck && ghostNear) {
+			toast.cancel();
 			ghostNear = false;
 			if (danger.isPlaying())
 				danger.pause();
@@ -380,6 +401,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 				mp.start();
 		}
 		else if (doubleCheck && ghostNear) {
+			toast.show();
 			mp.pause();
 			if (mp.isPlaying())
 				mp.pause();
@@ -448,17 +470,19 @@ public class GameActivity extends Activity implements SensorEventListener {
 		//Log.d("GameActivity", "Distance to Ghost: " + userLocation.distanceTo(ghost.getLocation()));
 		if (userLocation.distanceTo(ghost.getLocation()) < player.getAttackRadius()) {
 //			Log.d(TAG, "Proximate");
-			Toast toast = Toast.makeText(getApplicationContext(), "Ghost Nearby!", Toast.LENGTH_SHORT);
-			toast.show();
 			return true;
 		}
 		return false;
 	}
 
 	private void endGame() {
+		mp.stop();
+		danger.stop();
 		Intent i = new Intent(this, EndActivity.class);
 		Bundle bundle = new Bundle();
+		Log.d(TAG, "" + player.getScore());
 		bundle.putInt("KillScore", player.getScore());
+		i.putExtras(bundle);
 		startActivity(i);
 	}
 	
@@ -481,19 +505,46 @@ public class GameActivity extends Activity implements SensorEventListener {
 		}
 
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.036558,-78.507319), 13));
+    	//sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+	}
+	
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    //sensorManager.unregisterListener(this);
 	}
 
-	@Override
+	/*@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onSensorChanged(SensorEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onSensorChanged(SensorEvent event) {
+		Sensor sensor = event.sensor;
+		if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+			float x = event.values[0];
+	        float y = event.values[1];
+	        
+	        
+	        long curTime = System.currentTimeMillis();
+	        
+	        if ((curTime - lastUpdate) > 200) {
+	            long diffTime = (curTime - lastUpdate);
+	            lastUpdate = curTime;
+	            
+	            float xchange = Math.abs(x - last_x)/ diffTime / 100;
+	            float ychange = Math.abs(y - last_y)/ diffTime / 100;
+	            
+	            player.getLocation().setLatitude(player.getLocation().getLatitude() + xchange);
+	            player.getLocation().setLongitude(player.getLocation().getLongitude() + ychange);
+	            
+	            last_x = x;
+	            last_y = y;
+	        }
+		}*/
+	//}
 
 
 }

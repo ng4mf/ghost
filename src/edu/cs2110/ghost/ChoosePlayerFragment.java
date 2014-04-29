@@ -59,16 +59,23 @@ public class ChoosePlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "Strength Player Has Been Created And Registered");
+				Log.d(TAG, getActivity().getTitle().toString());
+				Log.d(TAG, "Not issue with activity");
 				Intent i = new Intent(getActivity(), GameActivity.class);// modify
-
+				Log.d(TAG, "Made intent");
+				
 				b = new Bundle();
 				b.putString("name", "Health");
 				b.putInt("maxHealth", 100);
 				b.putInt("power", 2);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
+				
+				Log.d(TAG, "Made extras for bundle");
 				i.putExtras(b);
+				Log.d(TAG, "Registered extras");
 				startActivity(i);
+				Log.d(TAG, "Made Activity");
 			}
 		});
 
@@ -86,7 +93,6 @@ public class ChoosePlayerFragment extends Fragment {
 				b.putInt("power", 1);
 				b.putInt("currency", 1000);
 				b.putDouble("attack", 200);
-
 				i.putExtras(b);
 				startActivity(i);
 			}

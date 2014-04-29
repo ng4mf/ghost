@@ -96,7 +96,12 @@ public class GhostThread extends AsyncTask<Void, ArrayList<Ghosts>, Void>{
 		if (time > 5) {
 			time = 0;
 //			Log.d(TAG, "Almost added");
-			master.changeGhosts("add", new Ghosts(38.036550, -78.507310));
+			int neg1 = (int)(Math.random()*(-2));
+			double variation1 = (Math.random()*(-2));
+			master.changeGhosts("add", 
+					new Ghosts(
+							master.getPlayer().getLocation().getLatitude() + 0.001, 
+							-78.507310));
 			//ghosts.add(new Ghosts(38.036550, -78.507310));
 			//Log.d(TAG, "Added Ghost");
 		}
